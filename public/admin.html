@@ -43,7 +43,7 @@
     </header>
 
     <main class="container mx-auto p-4 flex-grow max-w-5xl">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 mt-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 mt-4">
             <div class="glass p-6 rounded-2xl border-l-4 border-[#ff2d55] flex justify-between items-center">
                 <div>
                     <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Base de Datos</p>
@@ -51,28 +51,12 @@
                 </div>
                 <div class="bg-pink-500/10 p-4 rounded-xl"><i class="fas fa-users text-[#ff2d55] text-xl"></i></div>
             </div>
-            <div class="glass p-6 rounded-2xl border-l-4 border-[#00f3ff] flex justify-between items-center">
-                <div>
-                    <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Planes Activos</p>
-                    <h3 id="paid-count" class="text-3xl font-black text-white mt-1">0</h3>
-                </div>
-                <div class="bg-blue-500/10 p-4 rounded-xl"><i class="fas fa-crown text-[#00f3ff] text-xl"></i></div>
-            </div>
-            <div class="glass p-6 rounded-2xl border-l-4 border-[#22c55e] flex justify-between items-center">
-                <div>
-                    <p class="text-[10px] text-gray-400 uppercase font-black tracking-widest">Solicitudes Hoy</p>
-                    <h3 id="requests-today" class="text-3xl font-black text-white mt-1">0</h3>
-                </div>
-                <div class="bg-green-500/10 p-4 rounded-xl"><i class="fas fa-chart-line text-[#22c55e] text-xl"></i></div>
-            </div>
         </div>
 
-        <div class="grid grid-cols-5 gap-2 mb-6">
+        <div class="grid grid-cols-3 gap-2 mb-6">
             <button onclick="filterUsers('all')" id="btn-all" class="btn-filter active">TODOS</button>
+            <button onclick="filterUsers('premium')" id="btn-premium" class="btn-filter">PREMIUMS</button>
             <button onclick="filterUsers('admin')" id="btn-admin" class="btn-filter">ADMINS</button>
-            <button onclick="filterUsers('pro')" id="btn-pro" class="btn-filter">PRO</button>
-            <button onclick="filterUsers('plus')" id="btn-plus" class="btn-filter">PLUS</button>
-            <button onclick="filterUsers('lite')" id="btn-lite" class="btn-filter">LITE</button>
         </div>
 
         <div class="glass rounded-3xl overflow-hidden shadow-2xl">
@@ -83,41 +67,22 @@
                             <th class="p-5 font-black">Usuario / Email</th>
                             <th class="p-5 font-black">Rango</th>
                             <th class="p-5 font-black">Plan</th>
-                            <th class="p-5 font-black">Dias Rest.</th>
                             <th class="p-5 font-black">Consumo</th>
                             <th class="p-5 text-center font-black">Gestión</th>
                         </tr>
                     </thead>
                     <tbody id="user-table-body" class="text-sm">
-                        <tr><td colspan="6" class="p-10 text-center text-gray-500 font-black animate-pulse uppercase">Cargando Protocolos...</td></tr>
+                        <tr><td colspan="5" class="p-10 text-center text-gray-500 font-black animate-pulse uppercase">Cargando Protocolos...</td></tr>
                     </tbody>
                 </table>
             </div>
-        </div>
-
-        <div class="flex gap-3 mt-4 justify-end">
-            <button onclick="openCreateUser()" class="text-xs font-black bg-white/5 px-4 py-2 rounded-xl border border-white/10 hover:bg-white/20 transition">
-                <i class="fas fa-user-plus mr-1"></i> Crear Usuario
-            </button>
-            <button onclick="exportData()" class="text-xs font-black bg-white/5 px-4 py-2 rounded-xl border border-white/10 hover:bg-white/20 transition">
-                <i class="fas fa-file-export mr-1"></i> Exportar
-            </button>
-            <button onclick="showLogs()" class="text-xs font-black bg-white/5 px-4 py-2 rounded-xl border border-white/10 hover:bg-white/20 transition">
-                <i class="fas fa-history mr-1"></i> Logs
-            </button>
         </div>
     </main>
 
     <script>
         const userData = JSON.parse(localStorage.getItem('kazuma_user'));
         let allUsers = [];
-        let logs = [];
-        
-        // ═══════════════════════════════════════════════════
-        // 🔥 CAMBIA ESTE EMAIL POR EL TUYO 🔥
-        const SUPER_ADMIN = "edward.dev.oficial@gmail.com";  // <-- Cambia aquí
-        // ═══════════════════════════════════════════════════
-        
+        const SUPER_ADMIN = "edward.dev.oficial@gmail.com";
         const PLAN_DURATION = 33;
 
         if (!userData || userData.role !== 'admin') {
@@ -125,37 +90,22 @@
         } else {
             document.body.style.display = 'block';
             loadUsers();
-            loadLogs();
-        }
-
-        function loadLogs() {
-            try { logs = JSON.parse(localStorage.getItem('admin_logs') || '[]'); } catch(e) { logs = []; }
-        }
-
-        function addLog(action, details) {
-            logs.unshift({ timestamp: new Date().toISOString(), admin: userData.username || 'admin', action, details });
-            if (logs.length > 100) logs = logs.slice(0, 100);
-            localStorage.setItem('admin_logs', JSON.stringify(logs));
-        }
-
-        function calcularDiasRestantes(plan, planExpiresAt) {
-            if (!plan || plan === 'free' || !planExpiresAt) return 0;
-            const diff = new Date(planExpiresAt) - new Date();
-            return Math.ceil(diff / (1000 * 60 * 60 * 24)) > 0 ? Math.ceil(diff / (1000 * 60 * 60 * 24)) : 0;
         }
 
         function loadUsers() {
             try {
                 const stored = localStorage.getItem('staff_users');
                 allUsers = stored ? JSON.parse(stored) : [];
-                if (allUsers.length === 0 && userData) {
+                
+                // Si no hay usuarios, crear uno por defecto con el superadmin
+                if (allUsers.length === 0) {
                     allUsers = [{
                         username: userData.username || 'admin',
                         email: userData.email || SUPER_ADMIN,
                         password: userData.password || 'admin',
                         key: userData.key || 'edward',
                         role: userData.role || 'admin',
-                        plan: userData.plan || 'free',
+                        plan: 'free',
                         planActivatedAt: null,
                         planExpiresAt: null,
                         daysLeft: 0,
@@ -168,59 +118,51 @@
                     }];
                     saveUsers();
                 }
+
+                // Calcular días restantes
                 allUsers = allUsers.map(u => {
                     u.daysLeft = calcularDiasRestantes(u.plan, u.planExpiresAt);
                     return u;
                 });
-                updateStats();
+
+                document.getElementById('total-count').innerText = `${allUsers.length} Usuarios`;
                 renderTable(allUsers);
-            } catch(e) { console.error(e); }
+            } catch (e) { console.error(e); }
         }
 
         function saveUsers() {
             localStorage.setItem('staff_users', JSON.stringify(allUsers));
         }
 
-        function updateStats() {
-            document.getElementById('total-count').innerText = `${allUsers.length} Usuarios`;
-            document.getElementById('paid-count').innerText = allUsers.filter(u => u.plan && u.plan !== 'free' && u.daysLeft > 0).length;
-            document.getElementById('requests-today').innerText = allUsers.reduce((sum, u) => sum + (u.requestToday || 0), 0);
-        }
-
-        function getPlanBadge(plan) {
-            const p = (plan || 'free').toLowerCase();
-            if (p === 'lite') return 'badge-lite';
-            if (p === 'plus') return 'badge-plus';
-            if (p === 'pro') return 'badge-pro';
-            return 'badge-user';
-        }
-
-        function getPlanLabel(plan) {
-            const p = (plan || 'FREE').toUpperCase();
-            const labels = { 'LITE': 'Lite', 'PLUS': 'Plus', 'PRO': 'Pro', 'FREE': 'Free' };
-            return labels[p] || p;
-        }
-
-        function getDaysBadge(days) {
-            if (days === 0) return '<span class="days-badge days-danger">Expirado</span>';
-            if (days <= 5) return `<span class="days-badge days-danger">${days} dias</span>`;
-            if (days <= 10) return `<span class="days-badge days-warning">${days} dias</span>`;
-            return `<span class="days-badge days-good">${days} dias</span>`;
+        function calcularDiasRestantes(plan, planExpiresAt) {
+            if (!plan || plan === 'free' || !planExpiresAt) return 0;
+            const diff = new Date(planExpiresAt) - new Date();
+            return Math.ceil(diff / (1000 * 60 * 60 * 24)) > 0 ? Math.ceil(diff / (1000 * 60 * 60 * 24)) : 0;
         }
 
         function renderTable(list) {
             const body = document.getElementById('user-table-body');
-            if (!list || list.length === 0) {
-                body.innerHTML = `<tr><td colspan="6" class="p-10 text-center text-gray-500 font-black uppercase">No hay usuarios</td></tr>`;
-                return;
-            }
             body.innerHTML = list.map(u => {
                 const isMe = u.email === SUPER_ADMIN;
                 const isBlocked = u.blocked === true;
                 const daysLeft = u.daysLeft || 0;
-                const isExpired = u.plan && u.plan !== 'free' && daysLeft === 0;
-                let planLabel = isBlocked ? 'Bloqueado' : (isExpired ? 'Expirado' : getPlanLabel(u.plan));
-                let badgeClass = isBlocked ? 'badge-user' : (isExpired ? 'badge-expired' : getPlanBadge(u.plan));
+                
+                let planBadge = 'badge-user';
+                let planLabel = 'Free';
+                if (u.plan === 'lite') { planBadge = 'badge-lite'; planLabel = 'Lite'; }
+                else if (u.plan === 'plus') { planBadge = 'badge-plus'; planLabel = 'Plus'; }
+                else if (u.plan === 'pro') { planBadge = 'badge-pro'; planLabel = 'Pro'; }
+                else if (u.plan === 'premium') { planBadge = 'badge-premium'; planLabel = 'Premium'; }
+                else if (isBlocked) { planLabel = 'Bloqueado'; }
+
+                let daysBadge = '<span class="days-badge days-good">-</span>';
+                if (u.plan && u.plan !== 'free' && !isBlocked) {
+                    if (daysLeft === 0) daysBadge = '<span class="days-badge days-danger">Expirado</span>';
+                    else if (daysLeft <= 5) daysBadge = `<span class="days-badge days-danger">${daysLeft} dias</span>`;
+                    else if (daysLeft <= 10) daysBadge = `<span class="days-badge days-warning">${daysLeft} dias</span>`;
+                    else daysBadge = `<span class="days-badge days-good">${daysLeft} dias</span>`;
+                }
+
                 return `
                 <tr class="hover:bg-white/[0.03]">
                     <td class="p-5">
@@ -233,25 +175,14 @@
                         </span>
                     </td>
                     <td class="p-5">
-                        <span class="text-[9px] font-black px-3 py-1 rounded-lg ${badgeClass}">${planLabel}</span>
-                    </td>
-                    <td class="p-5">
-                        ${u.plan && u.plan !== 'free' && !isBlocked ? getDaysBadge(daysLeft) : (isBlocked ? '<span class="days-badge days-danger">Bloqueado</span>' : '<span class="days-badge days-good">-</span>')}
+                        <span class="text-[9px] font-black px-3 py-1 rounded-lg ${planBadge}">${planLabel} ${daysLeft > 0 && u.plan !== 'free' ? `(${daysLeft}d)` : ''}</span>
                     </td>
                     <td class="p-5 text-xs font-black text-white/70">
                         ${u.requestToday || 0} <span class="text-gray-800">/</span> ${u.limit}
                     </td>
                     <td class="p-5 text-center">
-                        <div class="flex items-center justify-center gap-1 flex-wrap">
-                        ${isMe ? '<i class="fas fa-lock text-gray-800"></i>' : `
-                            <button onclick="openEdit('${u.email}')" class="bg-white/5 hover:bg-pink-500/20 hover:text-pink-500 w-8 h-8 rounded-xl transition-all border border-white/5"><i class="fas fa-user-cog text-xs"></i></button>
-                            <button onclick="showPassword('${u.email}')" class="bg-white/5 hover:bg-green-500/20 hover:text-green-500 w-8 h-8 rounded-xl transition-all border border-white/5"><i class="fas fa-eye text-xs"></i></button>
-                            <button onclick="activatePlanModal('${u.email}')" class="bg-white/5 hover:bg-purple-500/20 hover:text-purple-500 w-8 h-8 rounded-xl transition-all border border-white/5"><i class="fas fa-crown text-xs"></i></button>
-                            <button onclick="toggleBlock('${u.email}', ${!isBlocked})" class="bg-white/5 hover:bg-red-500/20 hover:text-red-500 w-8 h-8 rounded-xl transition-all border border-white/5"><i class="fas ${isBlocked ? 'fa-unlock' : 'fa-ban'} text-xs"></i></button>
-                            <button onclick="resetUserLimit('${u.email}')" class="bg-white/5 hover:bg-blue-500/20 hover:text-blue-500 w-8 h-8 rounded-xl transition-all border border-white/5"><i class="fas fa-rotate text-xs"></i></button>
-                            <button onclick="deleteUser('${u.email}')" class="bg-white/5 hover:bg-red-500/20 hover:text-red-500 w-8 h-8 rounded-xl transition-all border border-white/5"><i class="fas fa-trash text-xs"></i></button>
-                        `}
-                        </div>
+                        ${isMe ? '<i class="fas fa-lock text-gray-800"></i>' : 
+                        `<button onclick="openEdit('${u.email}')" class="bg-white/5 hover:bg-pink-500/20 hover:text-pink-500 w-10 h-10 rounded-xl transition-all border border-white/5"><i class="fas fa-user-cog text-xs"></i></button>`}
                     </td>
                 </tr>`;
             }).join('');
@@ -259,257 +190,55 @@
 
         function filterUsers(type) {
             document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
-            const btn = document.getElementById(`btn-${type}`);
-            if (btn) btn.classList.add('active');
+            document.getElementById(`btn-${type}`).classList.add('active');
             if (type === 'all') renderTable(allUsers);
-            else renderTable(allUsers.filter(u => (u.plan || 'free').toLowerCase() === type || u.role === type));
+            else renderTable(allUsers.filter(u => u.role === type || (u.plan || '').toLowerCase() === type));
         }
 
-        // ============ ACTIVAR PLAN DIRECTO ============
-        function activatePlanDirect(email, planType) {
-            const idx = allUsers.findIndex(u => u.email === email);
-            if (idx === -1) { Swal.fire({ icon: 'error', title: 'Error', text: 'Usuario no encontrado' }); return; }
-
-            const planConfig = { lite: { limit: 500, label: 'Lite' }, plus: { limit: 1000, label: 'Plus' }, pro: { limit: 2000, label: 'Pro' } };
-            const planData = planConfig[planType];
-            if (!planData) { Swal.fire({ icon: 'error', title: 'Error', text: 'Plan invalido' }); return; }
-
-            const now = new Date();
-            const expiresAt = new Date(now);
-            expiresAt.setDate(expiresAt.getDate() + PLAN_DURATION);
-
-            allUsers[idx].plan = planType;
-            allUsers[idx].planActivatedAt = now.toISOString();
-            allUsers[idx].planExpiresAt = expiresAt.toISOString();
-            allUsers[idx].daysLeft = PLAN_DURATION;
-            allUsers[idx].limit = planData.limit;
-            allUsers[idx].blocked = false;
-
-            saveUsers();
-            addLog('Activar plan', `Plan ${planType} activado para ${allUsers[idx].username} por ${PLAN_DURATION} dias`);
-            Swal.fire({ icon: 'success', title: 'Plan Activado', text: `Plan ${planData.label} activado por ${PLAN_DURATION} dias`, background: '#161625', color: '#fff', timer: 1500, showConfirmButton: false });
-            loadUsers();
-        }
-
-        function activatePlanModal(email) {
+        async function openEdit(email) {
             const u = allUsers.find(user => user.email === email);
-            if (!u) return;
-            Swal.fire({
-                title: '<span style="color:#ff2d55;font-weight:900;">Activar Plan</span>',
-                background: '#161625',
-                color: '#fff',
-                width: '400px',
-                html: `
-                    <div style="text-align:left; margin-top:10px;">
-                        <p style="color:#888;font-size:13px;margin-bottom:15px;">Usuario: <strong style="color:white;">${u.username}</strong></p>
-                        <span class="swal-label">Seleccionar Plan</span>
-                        <select id="swal-plan-select" class="input-dark w-full p-3 rounded-xl outline-none">
-                            <option value="lite">Lite - 500 solicitudes/dia</option>
-                            <option value="plus">Plus - 1000 solicitudes/dia</option>
-                            <option value="pro">Pro - 2000 solicitudes/dia</option>
-                        </select>
-                        <div style="margin-top:12px;padding:12px;background:rgba(255,255,255,0.05);border-radius:12px;font-size:11px;color:#888;">
-                            <i class="fas fa-info-circle" style="color:#00f3ff;"></i> Duración: <strong style="color:white;">${PLAN_DURATION} dias</strong>
-                            ${u.plan && u.plan !== 'free' ? `<br>Plan actual: <strong style="color:#00f3ff;">${u.plan.toUpperCase()}</strong> | Dias: <strong>${u.daysLeft}</strong>` : ''}
-                        </div>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'ACTIVAR PLAN',
-                cancelButtonText: 'CANCELAR',
-                confirmButtonColor: '#22c55e',
-                cancelButtonColor: '#333',
-                customClass: { confirmButton: 'rounded-2xl font-black px-6 py-3', cancelButton: 'rounded-2xl font-black px-6 py-3' }
-            }).then(result => {
-                if (result.isConfirmed) {
-                    const plan = document.getElementById('swal-plan-select').value;
-                    activatePlanDirect(email, plan);
-                }
-            });
-        }
-
-        // ============ FUNCIONES ============
-        function showPassword(email) {
-            const u = allUsers.find(user => user.email === email);
-            if (!u) return;
-            Swal.fire({
-                title: '<span style="color:#ff2d55;font-weight:900;">Contraseña</span>',
-                background: '#161625',
-                color: '#fff',
-                html: `
-                    <div style="text-align:center;padding:10px 0;">
-                        <p style="color:#888;font-size:13px;">Usuario: <strong style="color:white;">${u.username}</strong></p>
-                        <p style="color:#888;font-size:13px;margin-bottom:15px;">Email: <strong style="color:white;">${u.email}</strong></p>
-                        <div style="background:rgba(0,0,0,0.5);padding:14px;border-radius:12px;font-family:monospace;font-size:16px;color:#00f3ff;border:1px solid rgba(0,243,255,0.2);">${u.password || 'No disponible'}</div>
-                    </div>
-                `,
-                confirmButtonText: 'CERRAR',
-                confirmButtonColor: '#ff2d55',
-                customClass: { confirmButton: 'rounded-2xl font-black px-6 py-3' }
-            });
-            addLog('Ver contraseña', `Se visualizó la contraseña de ${u.username}`);
-        }
-
-        function toggleBlock(email, block) {
-            const u = allUsers.find(user => user.email === email);
-            Swal.fire({
-                title: `${block ? 'BLOQUEAR' : 'DESBLOQUEAR'} USUARIO`,
-                text: `¿Estas seguro de ${block ? 'bloquear' : 'desbloquear'} a ${u.username}?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: block ? 'SI, BLOQUEAR' : 'SI, DESBLOQUEAR',
-                cancelButtonText: 'CANCELAR',
-                confirmButtonColor: block ? '#ef4444' : '#22c55e',
-                cancelButtonColor: '#333',
-                background: '#161625',
-                color: '#fff',
-                customClass: { confirmButton: 'rounded-2xl font-black px-6 py-3', cancelButton: 'rounded-2xl font-black px-6 py-3' }
-            }).then(result => {
-                if (result.isConfirmed) {
-                    const idx = allUsers.findIndex(user => user.email === email);
-                    allUsers[idx].blocked = block;
-                    saveUsers();
-                    addLog(`${block ? 'Bloqueo' : 'Desbloqueo'}`, `Usuario ${u.username} ${block ? 'bloqueado' : 'desbloqueado'}`);
-                    Swal.fire({ icon: 'success', title: 'Actualizado', background: '#161625', color: '#fff', timer: 1000, showConfirmButton: false });
-                    loadUsers();
-                }
-            });
-        }
-
-        function resetUserLimit(email) {
-            const u = allUsers.find(user => user.email === email);
-            Swal.fire({
-                title: 'RESETEAR LIMITE',
-                text: `¿Resetear el contador diario de ${u.username} a 0?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'SI, RESETEAR',
-                cancelButtonText: 'CANCELAR',
-                confirmButtonColor: '#22c55e',
-                cancelButtonColor: '#333',
-                background: '#161625',
-                color: '#fff',
-                customClass: { confirmButton: 'rounded-2xl font-black px-6 py-3', cancelButton: 'rounded-2xl font-black px-6 py-3' }
-            }).then(result => {
-                if (result.isConfirmed) {
-                    const idx = allUsers.findIndex(user => user.email === email);
-                    allUsers[idx].requestToday = 0;
-                    saveUsers();
-                    addLog('Resetear limite', `Limite de ${u.username} reseteado`);
-                    Swal.fire({ icon: 'success', title: 'Reseteado', background: '#161625', color: '#fff', timer: 1000, showConfirmButton: false });
-                    loadUsers();
-                }
-            });
-        }
-
-        function openCreateUser() {
-            Swal.fire({
-                title: '<span style="color:#ff2d55;font-weight:900;">CREAR USUARIO</span>',
+            const { value: formValues, isDenied } = await Swal.fire({
+                title: '<span style="color:#ff2d55; font-weight:900; letter-spacing:-1px;">GESTIÓN STAFF</span>',
                 background: '#161625',
                 color: '#fff',
                 width: '450px',
                 html: `
                     <div style="text-align:left; margin-top:10px;">
-                        <span class="swal-label">Usuario</span>
-                        <input id="swal-new-user" class="input-dark w-full p-3 rounded-xl mb-4 outline-none" placeholder="Nombre de usuario">
-                        <span class="swal-label">Email</span>
-                        <input id="swal-new-email" class="input-dark w-full p-3 rounded-xl mb-4 outline-none" placeholder="correo@ejemplo.com">
-                        <span class="swal-label">Contraseña</span>
-                        <input id="swal-new-pass" class="input-dark w-full p-3 rounded-xl mb-4 outline-none" placeholder="Contraseña" type="password">
-                        <span class="swal-label">Plan</span>
-                        <select id="swal-new-plan" class="input-dark w-full p-3 rounded-xl outline-none">
-                            <option value="free">Free</option>
-                            <option value="lite">Lite</option>
-                            <option value="plus">Plus</option>
-                            <option value="pro">Pro</option>
-                        </select>
-                        <span class="swal-label" style="margin-top:12px;">Limite Diario</span>
-                        <input id="swal-new-limit" type="number" class="input-dark w-full p-3 rounded-xl outline-none" value="100">
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'CREAR USUARIO',
-                cancelButtonText: 'CANCELAR',
-                confirmButtonColor: '#ff2d55',
-                cancelButtonColor: '#333',
-                customClass: { confirmButton: 'rounded-2xl font-black px-6 py-3', cancelButton: 'rounded-2xl font-black px-6 py-3' },
-                preConfirm: () => {
-                    const username = document.getElementById('swal-new-user').value.trim();
-                    const email = document.getElementById('swal-new-email').value.trim();
-                    const password = document.getElementById('swal-new-pass').value;
-                    const plan = document.getElementById('swal-new-plan').value;
-                    const limit = parseInt(document.getElementById('swal-new-limit').value) || 100;
-                    if (!username || !email || !password) { Swal.showValidationMessage('Todos los campos son obligatorios'); return false; }
-                    return { username, email, password, plan, limit };
-                }
-            }).then(result => {
-                if (result.isConfirmed) {
-                    const data = result.value;
-                    const newUser = {
-                        username: data.username,
-                        email: data.email,
-                        password: data.password,
-                        key: `edward_${Math.random().toString(36).substring(2, 8)}${Date.now().toString().slice(-4)}`,
-                        role: 'user',
-                        plan: data.plan,
-                        planActivatedAt: null,
-                        planExpiresAt: null,
-                        daysLeft: 0,
-                        limit: data.limit,
-                        requestToday: 0,
-                        totalRequest: 0,
-                        lastRequestDate: new Date().toISOString().split('T')[0],
-                        blocked: false,
-                        profile_img: ''
-                    };
-                    allUsers.unshift(newUser);
-                    saveUsers();
-                    addLog('Crear usuario', `Usuario ${data.username} creado`);
-                    Swal.fire({ icon: 'success', title: 'Usuario Creado', background: '#161625', color: '#fff', timer: 1500, showConfirmButton: false });
-                    loadUsers();
-                }
-            });
-        }
-
-        function openEdit(email) {
-            const u = allUsers.find(user => user.email === email);
-            if (!u) return;
-            Swal.fire({
-                title: '<span style="color:#ff2d55;font-weight:900;">GESTIÓN STAFF</span>',
-                background: '#161625',
-                color: '#fff',
-                width: '450px',
-                html: `
-                    <div style="text-align:left; margin-top:10px;">
-                        <span class="swal-label">Usuario</span>
+                        <span class="swal-label">Nombre de Usuario</span>
                         <input id="swal-user" class="input-dark w-full p-3 rounded-xl mb-4 outline-none" value="${u.username}">
-                        <span class="swal-label">Email</span>
+                        
+                        <span class="swal-label">Correo Electrónico</span>
                         <input id="swal-email" class="input-dark w-full p-3 rounded-xl mb-4 outline-none" value="${u.email}">
-                        <span class="swal-label">Contraseña</span>
+
+                        <span class="swal-label">Contraseña de Acceso</span>
                         <input id="swal-pass" class="input-dark w-full p-3 rounded-xl mb-4 outline-none" value="${u.password}">
-                        <span class="swal-label">API Key</span>
+
+                        <span class="swal-label">Llave Maestra (API KEY)</span>
                         <input id="swal-key" class="input-dark w-full p-3 rounded-xl mb-4 outline-none font-mono text-cyan-400" value="${u.key}">
+
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <span class="swal-label">Rango</span>
                                 <select id="swal-role" class="input-dark w-full p-3 rounded-xl outline-none">
                                     <option value="user" ${u.role === 'user' ? 'selected' : ''}>USER</option>
+                                    <option value="premium" ${u.role === 'premium' ? 'selected' : ''}>PREMIUM</option>
                                     <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>ADMIN</option>
                                 </select>
                             </div>
                             <div>
-                                <span class="swal-label">Limite</span>
+                                <span class="swal-label">Límite Diario</span>
                                 <input id="swal-limit" type="number" class="input-dark w-full p-3 rounded-xl outline-none" value="${u.limit}">
                             </div>
                         </div>
+
                         <div style="margin-top:12px;">
                             <span class="swal-label">Plan</span>
                             <div style="display:flex;gap:8px;align-items:center;">
                                 <select id="swal-plan" class="input-dark flex-1 p-3 rounded-xl outline-none">
-                                    <option value="free" ${u.plan === 'free' ? 'selected' : ''}>Free</option>
-                                    <option value="lite" ${u.plan === 'lite' ? 'selected' : ''}>Lite</option>
-                                    <option value="plus" ${u.plan === 'plus' ? 'selected' : ''}>Plus</option>
-                                    <option value="pro" ${u.plan === 'pro' ? 'selected' : ''}>Pro</option>
+                                    <option value="free" ${u.plan === 'free' ? 'selected' : ''}>FREE</option>
+                                    <option value="lite" ${u.plan === 'lite' ? 'selected' : ''}>LITE</option>
+                                    <option value="plus" ${u.plan === 'plus' ? 'selected' : ''}>PLUS</option>
+                                    <option value="pro" ${u.plan === 'pro' ? 'selected' : ''}>PRO</option>
                                 </select>
                                 <button onclick="activatePlanFromModal('${u.email}')" class="btn-plan" type="button"><i class="fas fa-play"></i> Activar</button>
                             </div>
@@ -522,35 +251,30 @@
                 `,
                 showCancelButton: true,
                 showDenyButton: true,
-                confirmButtonText: 'GUARDAR',
-                denyButtonText: 'ELIMINAR',
+                confirmButtonText: 'GUARDAR CAMBIOS',
+                denyButtonText: 'ELIMINAR CUENTA',
                 confirmButtonColor: '#ff2d55',
-                denyButtonColor: '#ef4444',
-                cancelButtonColor: '#333',
-                customClass: { confirmButton: 'rounded-2xl font-black px-6 py-3', denyButton: 'rounded-2xl font-black px-6 py-3', cancelButton: 'rounded-2xl font-black px-6 py-3' },
-                preConfirm: () => {
-                    const username = document.getElementById('swal-user').value.trim();
-                    const email = document.getElementById('swal-email').value.trim();
-                    const password = document.getElementById('swal-pass').value;
-                    const key = document.getElementById('swal-key').value.trim();
-                    const role = document.getElementById('swal-role').value;
-                    const limit = parseInt(document.getElementById('swal-limit').value) || 100;
-                    const plan = document.getElementById('swal-plan').value;
-                    if (!username || !email || !key) { Swal.showValidationMessage('Usuario, Email y API Key son obligatorios'); return false; }
-                    return { username, email, password, key, role, limit, plan };
-                }
-            }).then(result => {
-                if (result.value) {
-                    const idx = allUsers.findIndex(user => user.email === email);
-                    allUsers[idx] = { ...allUsers[idx], ...result.value };
-                    saveUsers();
-                    addLog('Actualizar usuario', `Usuario ${allUsers[idx].username} actualizado`);
-                    Swal.fire({ icon: 'success', title: 'Actualizado', background: '#161625', color: '#fff', timer: 1000, showConfirmButton: false });
-                    loadUsers();
-                } else if (result.isDenied) {
-                    deleteUser(email);
+                denyButtonColor: '#333',
+                customClass: {
+                    confirmButton: 'rounded-2xl font-black px-6 py-4',
+                    denyButton: 'rounded-2xl font-black text-[10px]'
                 }
             });
+
+            if (formValues) {
+                const newData = {
+                    username: document.getElementById('swal-user').value,
+                    email: document.getElementById('swal-email').value,
+                    password: document.getElementById('swal-pass').value,
+                    key: document.getElementById('swal-key').value,
+                    role: document.getElementById('swal-role').value,
+                    limit: parseInt(document.getElementById('swal-limit').value),
+                    plan: document.getElementById('swal-plan').value
+                };
+                updateUser(email, newData);
+            } else if (isDenied) {
+                deleteUser(email);
+            }
         }
 
         function activatePlanFromModal(email) {
@@ -573,72 +297,73 @@
                 color: '#fff',
                 customClass: { confirmButton: 'rounded-2xl font-black px-6 py-3', cancelButton: 'rounded-2xl font-black px-6 py-3' }
             }).then(result => {
-                if (result.isConfirmed) { activatePlanDirect(email, planType); }
-            });
-        }
-
-        function deleteUser(email) {
-            const u = allUsers.find(user => user.email === email);
-            Swal.fire({
-                title: '¿ELIMINAR?',
-                text: `¿Eliminar a ${u.username}? Esta acción es irreversible.`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'SI, ELIMINAR',
-                cancelButtonText: 'CANCELAR',
-                confirmButtonColor: '#ef4444',
-                cancelButtonColor: '#333',
-                background: '#161625',
-                color: '#fff',
-                customClass: { confirmButton: 'rounded-2xl font-black px-6 py-3', cancelButton: 'rounded-2xl font-black px-6 py-3' }
-            }).then(result => {
                 if (result.isConfirmed) {
-                    allUsers = allUsers.filter(user => user.email !== email);
-                    saveUsers();
-                    addLog('Eliminar usuario', `Usuario ${u.username} eliminado`);
-                    Swal.fire({ icon: 'success', title: 'Eliminado', background: '#161625', color: '#fff', timer: 1000, showConfirmButton: false });
-                    loadUsers();
+                    activatePlanDirect(email, planType);
                 }
             });
         }
 
-        function exportData() {
-            const dataStr = JSON.stringify(allUsers, null, 2);
-            const blob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `usuarios_export_${new Date().toISOString().slice(0,10)}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-            addLog('Exportar datos', 'Datos de usuarios exportados');
-            Swal.fire({ icon: 'success', title: 'Exportado', background: '#161625', color: '#fff', timer: 1000, showConfirmButton: false });
+        function activatePlanDirect(email, planType) {
+            const idx = allUsers.findIndex(u => u.email === email);
+            if (idx === -1) { Swal.fire({ icon: 'error', title: 'Error', text: 'Usuario no encontrado' }); return; }
+
+            const planConfig = { 
+                lite: { limit: 500, label: 'Lite' }, 
+                plus: { limit: 1000, label: 'Plus' }, 
+                pro: { limit: 2000, label: 'Pro' }
+            };
+            const planData = planConfig[planType];
+            if (!planData) { Swal.fire({ icon: 'error', title: 'Error', text: 'Plan inválido' }); return; }
+
+            const now = new Date();
+            const expiresAt = new Date(now);
+            expiresAt.setDate(expiresAt.getDate() + PLAN_DURATION);
+
+            allUsers[idx].plan = planType;
+            allUsers[idx].planActivatedAt = now.toISOString();
+            allUsers[idx].planExpiresAt = expiresAt.toISOString();
+            allUsers[idx].daysLeft = PLAN_DURATION;
+            allUsers[idx].limit = planData.limit;
+            allUsers[idx].blocked = false;
+
+            saveUsers();
+            Swal.fire({ icon: 'success', title: 'Plan Activado', text: `Plan ${planData.label} activado por ${PLAN_DURATION} dias`, background: '#161625', color: '#fff', timer: 1500, showConfirmButton: false });
+            loadUsers();
         }
 
-        function showLogs() {
-            if (logs.length === 0) {
-                Swal.fire({ title: 'Logs', text: 'No hay registros disponibles', icon: 'info', background: '#161625', color: '#fff', confirmButtonColor: '#ff2d55' });
-                return;
+        async function updateUser(email, newData) {
+            const idx = allUsers.findIndex(u => u.email === email);
+            if (idx === -1) return;
+            
+            // Mantener días restantes si no se cambia el plan
+            if (!newData.plan || newData.plan === allUsers[idx].plan) {
+                newData.daysLeft = allUsers[idx].daysLeft;
+                newData.planActivatedAt = allUsers[idx].planActivatedAt;
+                newData.planExpiresAt = allUsers[idx].planExpiresAt;
             }
-            let logHtml = logs.map(log => `
-                <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:11px;">
-                    <span style="color:#666;min-width:140px;">${new Date(log.timestamp).toLocaleString()}</span>
-                    <span style="color:#00f3ff;font-weight:700;min-width:80px;">${log.admin}</span>
-                    <span style="color:#888;">${log.action}</span>
-                    <span style="color:#555;font-size:10px;">${log.details || ''}</span>
-                </div>
-            `).join('');
-            Swal.fire({
-                title: '<span style="color:#ff2d55;font-weight:900;">REGISTRO DE ACTIVIDAD</span>',
-                html: `<div style="max-height:400px;overflow-y:auto;text-align:left;">${logHtml}</div>`,
-                width: '700px',
-                confirmButtonText: 'CERRAR',
+            
+            allUsers[idx] = { ...allUsers[idx], ...newData };
+            saveUsers();
+            
+            Swal.fire({ icon: 'success', title: 'Protocolo Actualizado', background: '#161625', color: '#fff', showConfirmButton: false, timer: 1000 });
+            loadUsers();
+        }
+
+        async function deleteUser(email) {
+            const confirm = await Swal.fire({
+                title: '¿ELIMINAR?',
+                text: "Esta acción es irreversible.",
+                icon: 'warning',
+                showCancelButton: true,
                 confirmButtonColor: '#ff2d55',
                 background: '#161625',
-                color: '#fff',
-                customClass: { confirmButton: 'rounded-2xl font-black px-6 py-3' },
-                showCloseButton: true
+                color: '#fff'
             });
+            if (confirm.isConfirmed) {
+                allUsers = allUsers.filter(u => u.email !== email);
+                saveUsers();
+                loadUsers();
+            }
         }
     </script>
 </body>
