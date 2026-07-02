@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -18,25 +19,15 @@
         tr:hover { background: rgba(255,255,255,0.02); }
         .badge-premium { background: rgba(0, 243, 255, 0.1); color: var(--neon-blue); border: 1px solid rgba(0, 243, 255, 0.2); }
         .badge-user { background: rgba(255, 255, 255, 0.05); color: #888; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .badge-lite { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.2); }
-        .badge-plus { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
-        .badge-pro { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.2); }
-        .badge-expired { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
-        .days-badge { font-size: 9px; font-weight: 900; padding: 2px 10px; border-radius: 12px; display: inline-block; }
-        .days-good { background: rgba(34, 197, 94, 0.15); color: #22c55e; }
-        .days-warning { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-        .days-danger { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-
+        
+        /* Estilo idéntico al modal viejo */
         .swal2-popup { border-radius: 2.5rem !important; border: 1px solid rgba(255,255,255,0.1) !important; padding: 2rem !important; }
         .swal-label { text-align: left; text-transform: uppercase; font-weight: 900; font-size: 10px; color: #666; display: block; margin-bottom: 4px; margin-left: 4px; }
-        
-        .btn-plan { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 9px; font-weight: 700; cursor: pointer; transition: 0.3s; }
-        .btn-plan:hover { transform: scale(1.05); filter: brightness(1.1); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
     <header class="p-4 border-b border-white/5 flex justify-between items-center sticky top-0 bg-[#0d0d0d] z-50">
-        <div class="font-bold text-xl uppercase tracking-tighter">Edward <span class="text-[#ff2d55]">STAFF</span></div>
+        <div class="font-bold text-xl uppercase tracking-tighter">DvWilkerOFC <span class="text-[#ff2d55]">STAFF</span></div>
         <button onclick="location.href='/dash'" class="text-sm bg-white/10 px-4 py-2 rounded-xl hover:bg-white/20 transition">
             <i class="fas fa-arrow-left mr-2"></i> Volver
         </button>
@@ -66,13 +57,12 @@
                         <tr>
                             <th class="p-5 font-black">Usuario / Email</th>
                             <th class="p-5 font-black">Rango</th>
-                            <th class="p-5 font-black">Plan</th>
                             <th class="p-5 font-black">Consumo</th>
                             <th class="p-5 text-center font-black">Gestión</th>
                         </tr>
                     </thead>
                     <tbody id="user-table-body" class="text-sm">
-                        <tr><td colspan="5" class="p-10 text-center text-gray-500 font-black animate-pulse uppercase">Cargando Protocolos...</td></tr>
+                        <tr><td colspan="4" class="p-10 text-center text-gray-500 font-black animate-pulse uppercase">Cargando Protocolos...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -83,7 +73,6 @@
         const userData = JSON.parse(localStorage.getItem('kazuma_user'));
         let allUsers = [];
         const SUPER_ADMIN = "edward.dev.oficial@gmail.com";
-        const PLAN_DURATION = 33;
 
         if (!userData || userData.role !== 'admin') {
             window.location.href = '/dash';
@@ -92,77 +81,22 @@
             loadUsers();
         }
 
-        function loadUsers() {
+        async function loadUsers() {
             try {
-                const stored = localStorage.getItem('staff_users');
-                allUsers = stored ? JSON.parse(stored) : [];
-                
-                // Si no hay usuarios, crear uno por defecto con el superadmin
-                if (allUsers.length === 0) {
-                    allUsers = [{
-                        username: userData.username || 'admin',
-                        email: userData.email || SUPER_ADMIN,
-                        password: userData.password || 'admin',
-                        key: userData.key || 'edward',
-                        role: userData.role || 'admin',
-                        plan: 'free',
-                        planActivatedAt: null,
-                        planExpiresAt: null,
-                        daysLeft: 0,
-                        limit: userData.limit || 100000,
-                        requestToday: 0,
-                        totalRequest: 0,
-                        lastRequestDate: new Date().toISOString().split('T')[0],
-                        blocked: false,
-                        profile_img: userData.profile_img || ''
-                    }];
-                    saveUsers();
+                const res = await fetch(`/api/auth/admin/all?apiKey=${userData.key}`);
+                const data = await res.json();
+                if (data.status) {
+                    allUsers = data.users;
+                    document.getElementById('total-count').innerText = `${allUsers.length} Usuarios`;
+                    renderTable(allUsers);
                 }
-
-                // Calcular días restantes
-                allUsers = allUsers.map(u => {
-                    u.daysLeft = calcularDiasRestantes(u.plan, u.planExpiresAt);
-                    return u;
-                });
-
-                document.getElementById('total-count').innerText = `${allUsers.length} Usuarios`;
-                renderTable(allUsers);
             } catch (e) { console.error(e); }
-        }
-
-        function saveUsers() {
-            localStorage.setItem('staff_users', JSON.stringify(allUsers));
-        }
-
-        function calcularDiasRestantes(plan, planExpiresAt) {
-            if (!plan || plan === 'free' || !planExpiresAt) return 0;
-            const diff = new Date(planExpiresAt) - new Date();
-            return Math.ceil(diff / (1000 * 60 * 60 * 24)) > 0 ? Math.ceil(diff / (1000 * 60 * 60 * 24)) : 0;
         }
 
         function renderTable(list) {
             const body = document.getElementById('user-table-body');
             body.innerHTML = list.map(u => {
                 const isMe = u.email === SUPER_ADMIN;
-                const isBlocked = u.blocked === true;
-                const daysLeft = u.daysLeft || 0;
-                
-                let planBadge = 'badge-user';
-                let planLabel = 'Free';
-                if (u.plan === 'lite') { planBadge = 'badge-lite'; planLabel = 'Lite'; }
-                else if (u.plan === 'plus') { planBadge = 'badge-plus'; planLabel = 'Plus'; }
-                else if (u.plan === 'pro') { planBadge = 'badge-pro'; planLabel = 'Pro'; }
-                else if (u.plan === 'premium') { planBadge = 'badge-premium'; planLabel = 'Premium'; }
-                else if (isBlocked) { planLabel = 'Bloqueado'; }
-
-                let daysBadge = '<span class="days-badge days-good">-</span>';
-                if (u.plan && u.plan !== 'free' && !isBlocked) {
-                    if (daysLeft === 0) daysBadge = '<span class="days-badge days-danger">Expirado</span>';
-                    else if (daysLeft <= 5) daysBadge = `<span class="days-badge days-danger">${daysLeft} dias</span>`;
-                    else if (daysLeft <= 10) daysBadge = `<span class="days-badge days-warning">${daysLeft} dias</span>`;
-                    else daysBadge = `<span class="days-badge days-good">${daysLeft} dias</span>`;
-                }
-
                 return `
                 <tr class="hover:bg-white/[0.03]">
                     <td class="p-5">
@@ -173,9 +107,6 @@
                         <span class="text-[9px] font-black px-3 py-1 rounded-lg ${u.role === 'admin' ? 'badge-premium' : 'badge-user'}">
                             ${u.role.toUpperCase()}
                         </span>
-                    </td>
-                    <td class="p-5">
-                        <span class="text-[9px] font-black px-3 py-1 rounded-lg ${planBadge}">${planLabel} ${daysLeft > 0 && u.plan !== 'free' ? `(${daysLeft}d)` : ''}</span>
                     </td>
                     <td class="p-5 text-xs font-black text-white/70">
                         ${u.requestToday || 0} <span class="text-gray-800">/</span> ${u.limit}
@@ -192,7 +123,7 @@
             document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
             document.getElementById(`btn-${type}`).classList.add('active');
             if (type === 'all') renderTable(allUsers);
-            else renderTable(allUsers.filter(u => u.role === type || (u.plan || '').toLowerCase() === type));
+            else renderTable(allUsers.filter(u => u.role === type));
         }
 
         async function openEdit(email) {
@@ -230,23 +161,6 @@
                                 <input id="swal-limit" type="number" class="input-dark w-full p-3 rounded-xl outline-none" value="${u.limit}">
                             </div>
                         </div>
-
-                        <div style="margin-top:12px;">
-                            <span class="swal-label">Plan</span>
-                            <div style="display:flex;gap:8px;align-items:center;">
-                                <select id="swal-plan" class="input-dark flex-1 p-3 rounded-xl outline-none">
-                                    <option value="free" ${u.plan === 'free' ? 'selected' : ''}>FREE</option>
-                                    <option value="lite" ${u.plan === 'lite' ? 'selected' : ''}>LITE</option>
-                                    <option value="plus" ${u.plan === 'plus' ? 'selected' : ''}>PLUS</option>
-                                    <option value="pro" ${u.plan === 'pro' ? 'selected' : ''}>PRO</option>
-                                </select>
-                                <button onclick="activatePlanFromModal('${u.email}')" class="btn-plan" type="button"><i class="fas fa-play"></i> Activar</button>
-                            </div>
-                            <div style="margin-top:8px;padding:10px;background:rgba(255,255,255,0.05);border-radius:12px;font-size:10px;color:#888;">
-                                <i class="fas fa-info-circle" style="color:#00f3ff;"></i> Plan actual: <strong style="color:white;">${u.plan ? u.plan.toUpperCase() : 'FREE'}</strong>
-                                ${u.plan && u.plan !== 'free' ? ` | Dias: <strong style="color:${u.daysLeft > 5 ? '#22c55e' : '#ef4444'};">${u.daysLeft}</strong>` : ''}
-                            </div>
-                        </div>
                     </div>
                 `,
                 showCancelButton: true,
@@ -269,7 +183,7 @@
                     key: document.getElementById('swal-key').value,
                     role: document.getElementById('swal-role').value,
                     limit: parseInt(document.getElementById('swal-limit').value),
-                    plan: document.getElementById('swal-plan').value
+                    plan: document.getElementById('swal-role').value === 'user' ? 'free' : 'premium'
                 };
                 updateUser(email, newData);
             } else if (isDenied) {
@@ -277,76 +191,16 @@
             }
         }
 
-        function activatePlanFromModal(email) {
-            const planSelect = document.getElementById('swal-plan');
-            const planType = planSelect.value;
-            if (planType === 'free') {
-                Swal.fire({ icon: 'warning', title: 'Plan Free', text: 'Selecciona Lite, Plus o Pro.', background: '#161625', color: '#fff', confirmButtonColor: '#ff2d55' });
-                return;
-            }
-            Swal.fire({
-                title: 'Activar Plan',
-                text: `¿Activar plan ${planType.toUpperCase()} por ${PLAN_DURATION} dias?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'SI, ACTIVAR',
-                cancelButtonText: 'CANCELAR',
-                confirmButtonColor: '#22c55e',
-                cancelButtonColor: '#333',
-                background: '#161625',
-                color: '#fff',
-                customClass: { confirmButton: 'rounded-2xl font-black px-6 py-3', cancelButton: 'rounded-2xl font-black px-6 py-3' }
-            }).then(result => {
-                if (result.isConfirmed) {
-                    activatePlanDirect(email, planType);
-                }
-            });
-        }
-
-        function activatePlanDirect(email, planType) {
-            const idx = allUsers.findIndex(u => u.email === email);
-            if (idx === -1) { Swal.fire({ icon: 'error', title: 'Error', text: 'Usuario no encontrado' }); return; }
-
-            const planConfig = { 
-                lite: { limit: 500, label: 'Lite' }, 
-                plus: { limit: 1000, label: 'Plus' }, 
-                pro: { limit: 2000, label: 'Pro' }
-            };
-            const planData = planConfig[planType];
-            if (!planData) { Swal.fire({ icon: 'error', title: 'Error', text: 'Plan inválido' }); return; }
-
-            const now = new Date();
-            const expiresAt = new Date(now);
-            expiresAt.setDate(expiresAt.getDate() + PLAN_DURATION);
-
-            allUsers[idx].plan = planType;
-            allUsers[idx].planActivatedAt = now.toISOString();
-            allUsers[idx].planExpiresAt = expiresAt.toISOString();
-            allUsers[idx].daysLeft = PLAN_DURATION;
-            allUsers[idx].limit = planData.limit;
-            allUsers[idx].blocked = false;
-
-            saveUsers();
-            Swal.fire({ icon: 'success', title: 'Plan Activado', text: `Plan ${planData.label} activado por ${PLAN_DURATION} dias`, background: '#161625', color: '#fff', timer: 1500, showConfirmButton: false });
-            loadUsers();
-        }
-
         async function updateUser(email, newData) {
-            const idx = allUsers.findIndex(u => u.email === email);
-            if (idx === -1) return;
-            
-            // Mantener días restantes si no se cambia el plan
-            if (!newData.plan || newData.plan === allUsers[idx].plan) {
-                newData.daysLeft = allUsers[idx].daysLeft;
-                newData.planActivatedAt = allUsers[idx].planActivatedAt;
-                newData.planExpiresAt = allUsers[idx].planExpiresAt;
+            const res = await fetch('/api/auth/admin/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ adminKey: userData.key, targetEmail: email, newData })
+            });
+            if (res.ok) {
+                Swal.fire({ icon: 'success', title: 'Protocolo Actualizado', background: '#161625', color: '#fff', showConfirmButton: false, timer: 1000 });
+                loadUsers();
             }
-            
-            allUsers[idx] = { ...allUsers[idx], ...newData };
-            saveUsers();
-            
-            Swal.fire({ icon: 'success', title: 'Protocolo Actualizado', background: '#161625', color: '#fff', showConfirmButton: false, timer: 1000 });
-            loadUsers();
         }
 
         async function deleteUser(email) {
@@ -360,9 +214,12 @@
                 color: '#fff'
             });
             if (confirm.isConfirmed) {
-                allUsers = allUsers.filter(u => u.email !== email);
-                saveUsers();
-                loadUsers();
+                const res = await fetch('/api/auth/admin/delete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adminKey: userData.key, targetEmail: email })
+                });
+                if (res.ok) loadUsers();
             }
         }
     </script>
