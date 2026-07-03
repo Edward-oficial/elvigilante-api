@@ -43,6 +43,7 @@ const animeKiss = require('./routes/anime/kiss');
 const animeSad = require('./routes/anime/sad');
 const animeSolo = require('./routes/anime/solo');
 const userAuth = require('./routes/users');
+const toolCatbox = require('./routes/tools/catbox');
 
 app.use('/api/auth', userAuth);
 
@@ -67,6 +68,7 @@ app.use('/api/download/apkmod', authHandler, dlApkMod);
 app.use('/api/anime/kiss', authHandler, animeKiss); 
 app.use('/api/anime/solo', authHandler, animeSolo);
 app.use('/api/anime/sad', authHandler, animeSad);
+app.use('/api/tools/catbox', authHandler, toolCatbox);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
