@@ -45,19 +45,14 @@
 
         #safety-block {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: var(--bg-primary);
             z-index: 10000;
             transition: opacity 0.5s ease;
         }
 
-        #safety-block.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
+        #safety-block.hidden { opacity: 0; pointer-events: none; }
 
         header {
             background: var(--bg-card);
@@ -71,10 +66,6 @@
             z-index: 50;
             box-shadow: var(--shadow);
             transition: background var(--transition), box-shadow var(--transition);
-        }
-
-        body.light-mode header {
-            border-bottom: 1px solid rgba(0,0,0,0.04);
         }
 
         .brand {
@@ -94,14 +85,10 @@
             background-clip: text;
         }
 
-        .brand i {
-            color: var(--accent);
-            font-size: 1.2rem;
-        }
+        .brand i { color: var(--accent); font-size: 1.2rem; }
 
         .theme-toggle {
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             border-radius: 50%;
             background: var(--bg-primary);
             display: flex;
@@ -114,17 +101,9 @@
             font-size: 0.9rem;
         }
 
-        .theme-toggle:hover {
-            background: var(--accent);
-            color: white;
-            transform: rotate(20deg);
-        }
+        .theme-toggle:hover { background: var(--accent); color: white; transform: rotate(20deg); }
 
-        .header-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
 
         .btn-back {
             font-size: 0.7rem;
@@ -142,14 +121,7 @@
             text-decoration: none;
         }
 
-        body.light-mode .btn-back {
-            border: 1px solid rgba(0,0,0,0.04);
-        }
-
-        .btn-back:hover {
-            border-color: var(--accent);
-            color: var(--text-primary);
-        }
+        .btn-back:hover { border-color: var(--accent); color: var(--text-primary); }
 
         .card {
             background: var(--bg-card);
@@ -161,10 +133,6 @@
             margin-bottom: 20px;
         }
 
-        body.light-mode .card {
-            border: 1px solid rgba(0,0,0,0.02);
-        }
-
         .card-header {
             padding: 18px 24px 14px;
             border-bottom: 1px solid rgba(0,0,0,0.04);
@@ -173,13 +141,8 @@
             gap: 12px;
         }
 
-        body.light-mode .card-header {
-            border-bottom: 1px solid rgba(0,0,0,0.04);
-        }
-
         .card-header .icon {
-            width: 38px;
-            height: 38px;
+            width: 38px; height: 38px;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -190,14 +153,10 @@
 
         .card-header .icon.camera { background: rgba(59, 130, 246, 0.1); color: var(--accent); }
         .card-header .icon.qr { background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); }
-        .card-header .icon.tts { background: rgba(34, 197, 94, 0.1); color: #22c55e; }
+        .card-header .icon.catbox { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
         .card-header .icon.gacha { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
 
-        .card-header h3 {
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin: 0;
-        }
+        .card-header h3 { font-size: 0.85rem; font-weight: 700; margin: 0; }
 
         .card-header .badge {
             font-size: 0.55rem;
@@ -211,9 +170,7 @@
             margin-left: auto;
         }
 
-        .card-body {
-            padding: 18px 24px 20px;
-        }
+        .card-body { padding: 18px 24px 20px; }
 
         .card-body .desc {
             font-size: 0.72rem;
@@ -224,10 +181,7 @@
             gap: 6px;
         }
 
-        .card-body .desc i {
-            color: var(--accent);
-            font-size: 0.7rem;
-        }
+        .card-body .desc i { color: var(--accent); font-size: 0.7rem; }
 
         .code-box {
             background: var(--bg-primary);
@@ -243,10 +197,6 @@
             white-space: nowrap;
         }
 
-        body.light-mode .code-box {
-            border: 1px solid rgba(0,0,0,0.04);
-        }
-
         .input-test {
             width: 100%;
             background: var(--bg-primary);
@@ -260,32 +210,12 @@
             font-family: inherit;
         }
 
-        .input-test::placeholder {
-            color: var(--text-muted);
-        }
+        .input-test::placeholder { color: var(--text-muted); }
+        .input-test:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08); }
 
-        .input-test:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
-        }
+        select.input-test { appearance: none; cursor: pointer; }
 
-        .input-test.textarea {
-            min-height: 80px;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        select.input-test {
-            appearance: none;
-            cursor: pointer;
-        }
-
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 
         .btn-test {
             background: var(--accent-gradient);
@@ -302,18 +232,12 @@
             box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
         }
 
-        .btn-test:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
-        }
-
-        .btn-test:active {
-            transform: translateY(0);
-        }
-
+        .btn-test:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25); }
+        .btn-test:active { transform: translateY(0); }
         .btn-test.green { background: linear-gradient(135deg, #22c55e, #16a34a); }
         .btn-test.purple { background: linear-gradient(135deg, #8b5cf6, #6366f1); }
         .btn-test.gold { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .btn-test.pink { background: linear-gradient(135deg, #ec4899, #db2777); }
 
         .btn-test.secondary {
             background: var(--bg-primary);
@@ -322,54 +246,9 @@
             box-shadow: none;
         }
 
-        body.light-mode .btn-test.secondary {
-            border: 1px solid rgba(0,0,0,0.04);
-        }
+        .btn-test.secondary:hover { border-color: var(--accent); color: var(--text-primary); transform: translateY(-2px); }
 
-        .btn-test.secondary:hover {
-            border-color: var(--accent);
-            color: var(--text-primary);
-            transform: translateY(-2px);
-        }
-
-        .btn-group-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .gender-selector {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .gender-btn {
-            flex: 1;
-            padding: 10px;
-            border-radius: 14px;
-            border: 1.5px solid transparent;
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
-        }
-
-        .gender-btn:hover {
-            border-color: var(--accent);
-            color: var(--text-primary);
-        }
-
-        .gender-btn.active {
-            background: var(--accent-gradient);
-            color: white;
-            border-color: var(--accent);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-        }
+        .btn-group-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 
         .img-result {
             width: 100%;
@@ -381,27 +260,7 @@
             margin-top: 14px;
         }
 
-        body.light-mode .img-result {
-            border: 2px solid rgba(0,0,0,0.04);
-        }
-
-        .img-result.qr-result {
-            max-width: 200px;
-            display: block;
-            margin: 14px auto 0;
-        }
-
-        .audio-player {
-            width: 100%;
-            margin-top: 14px;
-            border-radius: 12px;
-            display: none;
-            accent-color: var(--accent);
-        }
-
-        .audio-player::-webkit-media-controls-panel {
-            background: var(--bg-primary);
-        }
+        .img-result.qr-result { max-width: 200px; display: block; margin: 14px auto 0; }
 
         .result-box {
             background: var(--bg-primary);
@@ -418,10 +277,6 @@
             overflow-y: auto;
             display: none;
             line-height: 1.6;
-        }
-
-        body.light-mode .result-box {
-            border: 1px solid rgba(0,0,0,0.04);
         }
 
         .result-box::-webkit-scrollbar { width: 4px; }
@@ -445,14 +300,7 @@
             transition: var(--transition);
         }
 
-        body.light-mode .btn-copy-json {
-            border-top: 1px solid rgba(0,0,0,0.04);
-        }
-
-        .btn-copy-json:hover {
-            color: var(--accent);
-            background: rgba(59, 130, 246, 0.04);
-        }
+        .btn-copy-json:hover { color: var(--accent); background: rgba(59, 130, 246, 0.04); }
 
         .page-title {
             font-size: 1.3rem;
@@ -464,13 +312,44 @@
             gap: 12px;
         }
 
-        .page-title i {
-            color: var(--accent);
+        .page-title i { color: var(--accent); }
+
+        /* Upload zone */
+        .upload-zone {
+            border: 2px dashed rgba(236, 72, 153, 0.3);
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 12px;
+            background: rgba(236, 72, 153, 0.03);
         }
 
-        .grecaptcha-badge {
-            z-index: 9999 !important;
+        .upload-zone:hover { border-color: #ec4899; background: rgba(236, 72, 153, 0.06); }
+        .upload-zone.dragover { border-color: #ec4899; background: rgba(236, 72, 153, 0.1); }
+
+        .upload-zone i { font-size: 2rem; color: #ec4899; margin-bottom: 8px; display: block; }
+        .upload-zone p { font-size: 0.75rem; color: var(--text-secondary); margin: 0; }
+        .upload-zone span { font-size: 0.65rem; color: var(--text-muted); }
+
+        .file-preview {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-primary);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
         }
+
+        .file-preview i { color: #ec4899; font-size: 1.2rem; }
+        .file-preview .file-name { font-size: 0.75rem; font-weight: 600; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .file-preview .file-size { font-size: 0.65rem; color: var(--text-muted); }
+        .file-preview .remove-file { color: var(--text-muted); cursor: pointer; font-size: 0.8rem; transition: var(--transition); }
+        .file-preview .remove-file:hover { color: #ef4444; }
+
+        .grecaptcha-badge { z-index: 9999 !important; }
 
         @media (max-width: 480px) {
             .card-header { padding: 14px 16px; }
@@ -479,7 +358,6 @@
             .page-title { font-size: 1.1rem; }
             .input-grid { grid-template-columns: 1fr; }
             .btn-group-grid { grid-template-columns: 1fr; }
-            .gender-selector { flex-direction: row; }
             .result-box { font-size: 0.55rem; max-height: 200px; }
             .img-result.qr-result { max-width: 150px; }
         }
@@ -519,7 +397,7 @@
             <div class="card-body">
                 <p class="desc"><i class="fas fa-info-circle"></i> Captura la pantalla de cualquier sitio web.</p>
                 <div class="code-box" id="ss-path">GET /api/tools/ssweb?apiKey=</div>
-                <input id="url-ss" class="input-test" placeholder="URL del sitio web...">
+                <input id="url-ss" class="input-test" placeholder="URL del sitio web..." style="margin-bottom:10px;">
                 <div class="input-grid">
                     <select id="device-ss" class="input-test">
                         <option value="desktop">🖥️ Escritorio</option>
@@ -548,7 +426,7 @@
             <div class="card-body">
                 <p class="desc"><i class="fas fa-info-circle"></i> Genera un código QR a partir de texto o URL.</p>
                 <div class="code-box" id="qr-path">GET /api/tools/qr?apiKey=</div>
-                <input id="text-qr" class="input-test" placeholder="Texto o URL...">
+                <input id="text-qr" class="input-test" placeholder="Texto o URL..." style="margin-bottom:10px;">
                 <button class="btn-test purple" onclick="testMedia('qr')">
                     <i class="fas fa-qrcode mr-2"></i> Generar QR
                 </button>
@@ -556,26 +434,44 @@
             </div>
         </div>
 
-        <!-- TTS -->
+        <!-- Catbox Upload -->
         <div class="card">
             <div class="card-header">
-                <div class="icon tts"><i class="fas fa-microphone"></i></div>
-                <h3>Text to Speech</h3>
-                <span class="badge">Audio</span>
+                <div class="icon catbox"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h3>Subir a Catbox</h3>
+                <span class="badge">Upload</span>
             </div>
             <div class="card-body">
-                <p class="desc"><i class="fas fa-info-circle"></i> Convierte texto en voz. Elige el género.</p>
-                <div class="code-box" id="tts-path">GET /api/tools/tts?apiKey=</div>
-                <div class="gender-selector">
-                    <button class="gender-btn active" id="btn-mujer" onclick="setGenero('mujer')">👩 Mujer</button>
-                    <button class="gender-btn" id="btn-hombre" onclick="setGenero('hombre')">👨 Hombre</button>
+                <p class="desc"><i class="fas fa-info-circle"></i> Sube un archivo y obtén el link directo de Catbox.</p>
+                <div class="code-box" id="catbox-path">POST /api/tools/catbox?apiKey=</div>
+
+                <input type="file" id="file-input" style="display:none" onchange="handleFile(this)">
+
+                <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()"
+                    ondragover="event.preventDefault(); this.classList.add('dragover')"
+                    ondragleave="this.classList.remove('dragover')"
+                    ondrop="handleDrop(event)">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Haz clic o arrastra tu archivo aquí</p>
+                    <span>Máx. 50MB — Imágenes, videos, audio, etc.</span>
                 </div>
-                <textarea id="texto-tts" class="input-test textarea" placeholder="Escribe el texto que quieres escuchar..."></textarea>
-                <button class="btn-test green" onclick="testTTS()">
-                    <i class="fas fa-play mr-2"></i> Generar Voz
+
+                <div class="file-preview" id="file-preview">
+                    <i class="fas fa-file"></i>
+                    <span class="file-name" id="file-name"></span>
+                    <span class="file-size" id="file-size"></span>
+                    <i class="fas fa-times remove-file" onclick="removeFile()"></i>
+                </div>
+
+                <button class="btn-test pink" onclick="testCatbox()">
+                    <i class="fas fa-upload mr-2"></i> Subir Archivo
                 </button>
-                <audio id="audio-tts" class="audio-player" controls></audio>
+
+                <div id="res-catbox" class="result-box"></div>
             </div>
+            <button id="copy-catbox" class="btn-copy-json" onclick="copyResult('catbox')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
         </div>
 
         <!-- Gacha System -->
@@ -626,20 +522,17 @@
             window.location.href = '/login';
         } else {
             document.addEventListener("DOMContentLoaded", () => {
-                // Cargar tema
                 const savedTheme = localStorage.getItem('kazuma-theme');
                 if (savedTheme === 'light') {
                     document.body.classList.add('light-mode');
                     document.getElementById('theme-btn').querySelector('i').classList.replace('fa-moon', 'fa-sun');
                 }
 
-                // Actualizar paths con API key
                 document.getElementById('ss-path').innerText += `${userData.key}&url=...&device=...&theme=...`;
                 document.getElementById('qr-path').innerText += `${userData.key}&text=...`;
-                document.getElementById('tts-path').innerText += `${userData.key}&texto=...&genero=mujer`;
+                document.getElementById('catbox-path').innerText += userData.key;
                 document.getElementById('gacha-path').innerText = `GET /api/tools/gacha/pull?apiKey=${userData.key}`;
 
-                // Ocultar safety block
                 setTimeout(() => {
                     document.getElementById('safety-block').classList.add('hidden');
                 }, 400);
@@ -648,11 +541,8 @@
 
         function toggleTheme() {
             const body = document.body;
-            const btn = document.getElementById('theme-btn');
-            const icon = btn.querySelector('i');
-
+            const icon = document.getElementById('theme-btn').querySelector('i');
             body.classList.toggle('light-mode');
-
             if (body.classList.contains('light-mode')) {
                 icon.classList.replace('fa-moon', 'fa-sun');
                 localStorage.setItem('kazuma-theme', 'light');
@@ -662,59 +552,72 @@
             }
         }
 
-        let generoTTS = 'mujer';
+        let selectedFile = null;
 
-        function setGenero(g) {
-            generoTTS = g;
-            document.getElementById('btn-mujer').classList.toggle('active', g === 'mujer');
-            document.getElementById('btn-hombre').classList.toggle('active', g === 'hombre');
+        function handleFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            setFile(file);
         }
 
-        async function testTTS() {
-            const texto = document.getElementById('texto-tts').value.trim();
-            const audio = document.getElementById('audio-tts');
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('upload-zone').classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file) setFile(file);
+        }
 
-            if (!texto) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Escribe algo',
-                    text: 'Ingresa el texto que quieres escuchar',
-                    background: 'var(--bg-card)',
-                    color: 'var(--text-primary)',
-                    confirmButtonColor: '#3b82f6'
-                });
-                return;
+        function setFile(file) {
+            selectedFile = file;
+            document.getElementById('upload-zone').style.display = 'none';
+            const preview = document.getElementById('file-preview');
+            preview.style.display = 'flex';
+            document.getElementById('file-name').innerText = file.name;
+            document.getElementById('file-size').innerText = `${(file.size / 1024).toFixed(1)} KB`;
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            document.getElementById('file-input').value = '';
+            document.getElementById('upload-zone').style.display = 'block';
+            document.getElementById('file-preview').style.display = 'none';
+        }
+
+        async function testCatbox() {
+            if (!selectedFile) {
+                return Swal.fire({ icon: 'warning', title: 'Sin archivo', text: 'Selecciona un archivo primero', background: 'var(--bg-card)', color: 'var(--text-primary)', confirmButtonColor: '#3b82f6' });
             }
 
-            Swal.fire({
-                title: 'Generando voz...',
-                allowOutsideClick: false,
-                didOpen: () => Swal.showLoading(),
-                background: 'var(--bg-card)',
-                color: 'var(--text-primary)'
-            });
+            const resBox = document.getElementById('res-catbox');
+            const copyBtn = document.getElementById('copy-catbox');
+
+            resBox.style.display = 'block';
+            resBox.innerText = "⏳ Subiendo archivo...";
+            copyBtn.style.display = 'none';
+
+            Swal.fire({ title: 'Subiendo...', allowOutsideClick: false, didOpen: () => Swal.showLoading(), background: 'var(--bg-card)', color: 'var(--text-primary)' });
 
             try {
-                const url = `/api/tools/tts?texto=${encodeURIComponent(texto)}&genero=${generoTTS}&apiKey=${userData.key}`;
-                const response = await fetch(url);
-                const data = await response.json();
+                const formData = new FormData();
+                formData.append('file', selectedFile);
 
-                if (!data.status) throw new Error(data.error || 'Error del servidor');
-
-                audio.src = data.url;
-                audio.style.display = 'block';
-                Swal.close();
-                audio.play();
-            } catch (e) {
-                Swal.close();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: e.message,
-                    background: 'var(--bg-card)',
-                    color: 'var(--text-primary)',
-                    confirmButtonColor: '#3b82f6'
+                const response = await fetch(`/api/tools/catbox?apiKey=${userData.key}`, {
+                    method: 'POST',
+                    body: formData
                 });
+
+                const data = await response.json();
+                resBox.innerText = JSON.stringify(data, null, 2);
+                copyBtn.style.display = 'block';
+                Swal.close();
+
+                if (data.status) {
+                    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '¡Subido!', showConfirmButton: false, timer: 2000, background: 'var(--bg-card)', color: 'var(--text-primary)' });
+                }
+            } catch (e) {
+                resBox.innerText = "❌ Error al subir";
+                copyBtn.style.display = 'block';
+                Swal.close();
             }
         }
 
@@ -726,62 +629,19 @@
                 const u = document.getElementById('url-ss').value.trim();
                 const d = document.getElementById('device-ss').value;
                 const t = document.getElementById('theme-ss').value;
-
-                if (!u) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'URL requerida',
-                        text: 'Ingresa la URL del sitio web',
-                        background: 'var(--bg-card)',
-                        color: 'var(--text-primary)',
-                        confirmButtonColor: '#3b82f6'
-                    });
-                    return;
-                }
-
+                if (!u) return Swal.fire({ icon: 'warning', title: 'URL requerida', background: 'var(--bg-card)', color: 'var(--text-primary)', confirmButtonColor: '#3b82f6' });
                 finalUrl = `/api/tools/ssweb?url=${encodeURIComponent(u)}&device=${d}&theme=${t}&apiKey=${userData.key}`;
             } else {
                 const txt = document.getElementById('text-qr').value.trim();
-
-                if (!txt) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Texto requerido',
-                        text: 'Ingresa el texto o URL para el QR',
-                        background: 'var(--bg-card)',
-                        color: 'var(--text-primary)',
-                        confirmButtonColor: '#3b82f6'
-                    });
-                    return;
-                }
-
+                if (!txt) return Swal.fire({ icon: 'warning', title: 'Texto requerido', background: 'var(--bg-card)', color: 'var(--text-primary)', confirmButtonColor: '#3b82f6' });
                 finalUrl = `/api/tools/qr?text=${encodeURIComponent(txt)}&apiKey=${userData.key}`;
             }
 
-            Swal.fire({
-                title: 'Procesando...',
-                allowOutsideClick: false,
-                didOpen: () => Swal.showLoading(),
-                background: 'var(--bg-card)',
-                color: 'var(--text-primary)'
-            });
+            Swal.fire({ title: 'Procesando...', allowOutsideClick: false, didOpen: () => Swal.showLoading(), background: 'var(--bg-card)', color: 'var(--text-primary)' });
 
             imgEl.src = finalUrl;
-            imgEl.onload = () => {
-                imgEl.style.display = 'block';
-                Swal.close();
-            };
-            imgEl.onerror = () => {
-                Swal.close();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No se pudo cargar la imagen',
-                    background: 'var(--bg-card)',
-                    color: 'var(--text-primary)',
-                    confirmButtonColor: '#3b82f6'
-                });
-            };
+            imgEl.onload = () => { imgEl.style.display = 'block'; Swal.close(); };
+            imgEl.onerror = () => { Swal.close(); Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo cargar la imagen', background: 'var(--bg-card)', color: 'var(--text-primary)', confirmButtonColor: '#3b82f6' }); };
         }
 
         async function testGacha(action) {
@@ -790,31 +650,13 @@
             let url = '';
 
             switch (action) {
-                case 'pull':
-                    url = `/api/tools/gacha/pull?apiKey=${userData.key}`;
-                    break;
-                case 'multipull':
-                    url = `/api/tools/gacha/multipull?apiKey=${userData.key}`;
-                    break;
-                case 'characters':
-                    url = `/api/tools/gacha/characters?apiKey=${userData.key}`;
-                    break;
-                case 'stats':
-                    url = `/api/tools/gacha/stats?apiKey=${userData.key}`;
-                    break;
+                case 'pull': url = `/api/tools/gacha/pull?apiKey=${userData.key}`; break;
+                case 'multipull': url = `/api/tools/gacha/multipull?apiKey=${userData.key}`; break;
+                case 'characters': url = `/api/tools/gacha/characters?apiKey=${userData.key}`; break;
+                case 'stats': url = `/api/tools/gacha/stats?apiKey=${userData.key}`; break;
                 case 'search':
                     const search = document.getElementById('search-character').value.trim();
-                    if (!search) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Escribe un nombre',
-                            text: 'Ingresa el nombre del personaje a buscar',
-                            background: 'var(--bg-card)',
-                            color: 'var(--text-primary)',
-                            confirmButtonColor: '#3b82f6'
-                        });
-                        return;
-                    }
+                    if (!search) return Swal.fire({ icon: 'warning', title: 'Escribe un nombre', background: 'var(--bg-card)', color: 'var(--text-primary)', confirmButtonColor: '#3b82f6' });
                     url = `/api/tools/gacha/characters?search=${encodeURIComponent(search)}&apiKey=${userData.key}`;
                     break;
             }
@@ -836,28 +678,9 @@
 
         function copyResult(id) {
             const text = document.getElementById(`result-${id}`).innerText;
-            if (!text || text.includes("⏳") || text.includes("❌")) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Sin datos',
-                    text: 'Ejecuta una acción primero',
-                    background: 'var(--bg-card)',
-                    color: 'var(--text-primary)',
-                    confirmButtonColor: '#3b82f6'
-                });
-                return;
-            }
+            if (!text || text.includes("⏳") || text.includes("❌")) return Swal.fire({ icon: 'warning', title: 'Sin datos', background: 'var(--bg-card)', color: 'var(--text-primary)', confirmButtonColor: '#3b82f6' });
             navigator.clipboard.writeText(text);
-            Swal.fire({
-                toast: true,
-                position: 'top-end',
-                icon: 'success',
-                title: '¡Copiado!',
-                showConfirmButton: false,
-                timer: 1500,
-                background: 'var(--bg-card)',
-                color: 'var(--text-primary)'
-            });
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '¡Copiado!', showConfirmButton: false, timer: 1500, background: 'var(--bg-card)', color: 'var(--text-primary)' });
         }
 
         window.onload = () => {
