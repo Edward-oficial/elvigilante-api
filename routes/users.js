@@ -25,16 +25,16 @@ const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 // ============== ADMIN HARDCODEADO ==============
 const ADMIN = {
-    username: 'Edward',
-    email: process.env.ADMIN_EMAIL || 'admin@elvigilante.com',
-    password: process.env.ADMIN_PASSWORD || 'admin123',
-    key: process.env.ADMIN_KEY || 'elvigilante',
+    username: process.env.ADMIN_USERNAME || 'edward',
+    email: process.env.ADMIN_EMAIL || 'edward.dev.oficial@gmail.com',
+    password: process.env.ADMIN_PASSWORD || 'edward',
+    key: process.env.ADMIN_KEY || 'edward',
     role: 'admin',
     plan: 'ADMIN VIP',
     limit: 100000,
     requestToday: 0,
     totalRequest: 0,
-    profile_img: 'https://i.ibb.co/jPzxnp6x/NAGI-REO-RIN-SAE-ISAGI.jpg'
+    profile_img: process.env.ADMIN_IMG || 'https://i.ibb.co/jPzxnp6x/NAGI-REO-RIN-SAE-ISAGI.jpg'
 };
 
 // ============== HELPERS ==============
@@ -281,7 +281,7 @@ router.get('/admin/all', async (req, res) => {
     if (!isAdmin(apiKey)) return res.status(403).json({ status: false, message: 'No autorizado' });
 
     try {
-        const users = await User.find().select('-password');
+        const users = await User.find();
         res.json({ status: true, users: [ADMIN, ...users] });
     } catch (err) {
         res.status(500).json({ status: false });
