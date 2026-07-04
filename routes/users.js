@@ -61,7 +61,7 @@ router.post('/register', async (req, res) => {
             requestToday: 0,
             totalRequest: 0,
             lastRequestDate: new Date().toISOString().split('T')[0],
-            profile_img: "https://i.ibb.co/chJXMd0q/NAGI-REO-RIN-SAE-ISAGI.jpg",
+            profile_img: "https://raw.githubusercontent.com/dvwilker/gohan-storage/main/1778169562859-IMG-20260504-WA0386.jpg",
             createdAt: new Date().toISOString(),
             vipSince: null,
             vipExpires: null
