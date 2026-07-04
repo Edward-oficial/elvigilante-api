@@ -3,6 +3,7 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const { generateKey } = require('../middlewares/auth');
+const { findUser, createUser, getAllUsers, updateUser, deleteUser } = require('../db');
 
 // ============== CONFIGURACIÓN ==============
 const adminPath = path.join(__dirname, '../database/users.json');
