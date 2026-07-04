@@ -25,7 +25,7 @@ const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 // ============== ADMIN HARDCODEADO ==============
 const ADMIN = {
-    username: 'DvWilkerOFC',
+    username: 'Edward',
     email: process.env.ADMIN_EMAIL || 'admin@elvigilante.com',
     password: process.env.ADMIN_PASSWORD || 'admin123',
     key: process.env.ADMIN_KEY || 'elvigilante',
@@ -34,7 +34,7 @@ const ADMIN = {
     limit: 100000,
     requestToday: 0,
     totalRequest: 0,
-    profile_img: 'https://raw.githubusercontent.com/dvwilker/gohan-storage/main/1778169562859-IMG-20260504-WA0386.jpg'
+    profile_img: 'https://i.ibb.co/jPzxnp6x/NAGI-REO-RIN-SAE-ISAGI.jpg'
 };
 
 // ============== HELPERS ==============
