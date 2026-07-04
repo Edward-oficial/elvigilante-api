@@ -62,9 +62,9 @@ const transporter = nodemailer.createTransport({
 
 async function sendWelcomeEmail(email, username, apiKey) {
     const mailOptions = {
-        from: `"DvWilkerOFC API" <${process.env.EMAIL_USER}>`,
+        from: `"Edward API" <${process.env.EMAIL_USER}>`,
         to: email,
-        subject: '¡Bienvenido a DvWilkerOFC API!',
+        subject: '¡Bienvenido a Edward API!',
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; padding: 20px; border-radius: 10px;">
                 <h2 style="color: #00f3ff; text-align: center;">¡Bienvenido, ${username}!</h2>
@@ -138,7 +138,7 @@ router.post('/register', async (req, res) => {
         // Enviar correo de bienvenida (no bloquea la respuesta del registro)
         sendWelcomeEmail(email, username, newUser.key);
 
-        res.json({ status: true, creator: "Félix Ofc", message: "Registro exitoso", key: newUser.key });
+        res.json({ status: true, creator: "Edward", message: "Registro exitoso", key: newUser.key });
     } catch (err) {
         console.error(err);
         res.status(500).json({ status: false, message: "Error en el servidor durante el registro" });
@@ -166,7 +166,7 @@ router.post('/login', async (req, res) => {
                     role: "admin",
                     plan: "ADMIN VIP",
                     limit: adminUser.limit || 100000,
-                    profileImg: adminUser.profile_img || "https://raw.githubusercontent.com/dvwilker/gohan-storage/main/1778169562859-IMG-20260504-WA0386.jpg"
+                    profileImg: adminUser.profile_img || "https://i.ibb.co/chJXMd0q/NAGI-REO-RIN-SAE-ISAGI.jpg"
                 }
             });
         }
@@ -214,7 +214,7 @@ router.get('/me', async (req, res) => {
                     key: adminUser.key,
                     role: "admin",
                     plan: "ADMIN VIP",
-                    profile_img: adminUser.profile_img || "https://raw.githubusercontent.com/dvwilker/gohan-storage/main/1778169562859-IMG-20260504-WA0386.jpg",
+                    profile_img: adminUser.profile_img || "https://i.ibb.co/chJXMd0q/NAGI-REO-RIN-SAE-ISAGI.jpg",
                     requests: {
                         today: adminUser.requestToday || 0,
                         total: adminUser.totalRequest || 0,
