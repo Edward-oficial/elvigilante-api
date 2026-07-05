@@ -6,6 +6,7 @@ const path = require('path');
 const crypto = require('crypto');
 const vm = require('vm');
 const { spawn } = require('child_process');
+const ffmpegPath = require('ffmpeg-static');
 
 const VALID_QUALITIES = ['144', '240', '360', '480', '720', '1080', '1440', '2160'];
 const YT_REGEX = /^((?:https?:)?\/\/)?((?:www|m|music)\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(?:embed\/)?(?:v\/)?(?:shorts\/)?([a-zA-Z0-9_-]{11})/;
@@ -182,7 +183,7 @@ function pickFormats(formats, quality) {
 
 function ffmpegMerge(videoUrl, audioUrl, outputPath) {
     return new Promise((resolve, reject) => {
-        const ff = spawn('ffmpeg', [
+        const ff = spawn(ffmpegPath, [
             '-i', videoUrl,
             '-i', audioUrl,
             '-c', 'copy',
