@@ -7,11 +7,7 @@ class SaveTube {
         this.fmt = ['144', '240', '360', '480', '720', '1080', 'mp3'];
         this.m = /^((?:https?:)?\/\/)?((?:www|m|music)\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(?:embed\/)?(?:v\/)?(?:shorts\/)?([a-zA-Z0-9_-]{11})/;
 
-        // Timeout agresivo: si el servicio no responde en 8s, cortamos.
-        // Esto es la causa #1 de "lentitud" percibida: sin timeout, un
-        // request colgado puede tardar 30s+ (el default de muchos proxies).
         this.is = axios.create({
-            timeout: 8000,
             headers: {
                 'content-type': 'application/json',
                 'origin': 'https://yt.savetube.me',
