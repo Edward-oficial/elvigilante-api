@@ -430,6 +430,58 @@
             color: var(--accent);
         }
 
+        /* REDEEM CODE */
+        .redeem-input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .redeem-input {
+            flex: 1;
+            background: var(--bg-primary);
+            border: 1.5px solid transparent;
+            padding: 12px 16px;
+            border-radius: 14px;
+            color: var(--text-primary);
+            outline: none;
+            font-size: 0.85rem;
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: var(--transition);
+        }
+
+        .redeem-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
+        }
+
+        .redeem-input::placeholder {
+            color: var(--text-muted);
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
+        .redeem-btn {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition);
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+        }
+
+        .redeem-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25);
+        }
+
         .sidebar {
             position: fixed;
             top: 0;
@@ -589,6 +641,8 @@
             .card { padding: 18px; }
             .greeting { font-size: 1.2rem; }
             .avatar { width: 72px; height: 72px; }
+            .redeem-input-group { flex-direction: column; }
+            .redeem-btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
@@ -657,7 +711,7 @@
     <main class="container" id="content-area"></main>
 
     <footer class="footer">
-        <p>© 2026 Desarrollado por Edward</p>
+        <p>© 2026 Edward · Desarrollado por DvelvigilanteOFC</p>
     </footer>
 
     <script>
@@ -723,6 +777,89 @@
                 const el = document.getElementById('uptime-val');
                 if (el) el.innerText = `${h}:${m}:${s}`;
             }, 1000);
+        }
+
+        // ============ CANJE DE CÓDIGOS ============
+        async function canjearCodigo() {
+            const input = document.getElementById('redeem-input');
+            const code = input.value.trim();
+
+            if (!code) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Código vacío',
+                    text: 'Ingresa un código de recompensa',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-primary)',
+                    confirmButtonColor: '#3b82f6'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Canjeando...',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading(),
+                background: 'var(--bg-card)',
+                color: 'var(--text-primary)'
+            });
+
+            try {
+                const res = await fetch('/api/auth/redeem', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        apiKey: userData.key,
+                        code: code
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.status) {
+                    input.value = '';
+
+                    // Actualizar datos del usuario
+                    if (data.updatedUser) {
+                        const updatedUser = { ...userData, ...data.updatedUser };
+                        localStorage.setItem('kazuma_user', JSON.stringify(updatedUser));
+                        Object.assign(userData, updatedUser);
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Código Canjeado!',
+                        html: `
+                            <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:8px;">${data.message}</p>
+                            <p style="color: #22c55e; font-weight:900; font-size:1.4rem;">+${data.requests_added} solicitudes</p>
+                        `,
+                        background: 'var(--bg-card)',
+                        color: 'var(--text-primary)',
+                        confirmButtonColor: '#3b82f6'
+                    });
+
+                    // Recargar dashboard
+                    loadDash();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.error || 'Código inválido o ya usado',
+                        background: 'var(--bg-card)',
+                        color: 'var(--text-primary)',
+                        confirmButtonColor: '#3b82f6'
+                    });
+                }
+            } catch (e) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo conectar con el servidor',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-primary)',
+                    confirmButtonColor: '#3b82f6'
+                });
+            }
         }
 
         async function loadDash() {
@@ -820,6 +957,29 @@
                                 <div class="stat-value">${todayRequests} <span style="font-size:0.7rem; font-weight:400; color:var(--text-muted);">/ ${limitRequests}</span></div>
                                 <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- REDEEM CODE CARD -->
+                    <div class="card" style="background: linear-gradient(135deg, rgba(59,130,246,0.03), rgba(139,92,246,0.03)); border: 1px solid rgba(59,130,246,0.08);">
+                        <div class="card-header">
+                            <i class="fas fa-gift" style="color: #f59e0b;"></i>
+                            <span class="card-title">Canjear Código</span>
+                        </div>
+                        <p style="font-size:0.78rem; color: var(--text-muted); margin-bottom:14px;">
+                            ¿Tienes un código de recompensa? Canjéalo y obtén solicitudes extra.
+                        </p>
+                        <div class="redeem-input-group">
+                            <input 
+                                id="redeem-input" 
+                                type="text" 
+                                placeholder="Ej: NINGUNO" 
+                                class="redeem-input"
+                                oninput="this.value = this.value.toUpperCase()"
+                            >
+                            <button onclick="canjearCodigo()" class="redeem-btn">
+                                <i class="fas fa-check"></i> Canjear
+                            </button>
                         </div>
                     </div>
 
