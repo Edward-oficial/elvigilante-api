@@ -54,7 +54,7 @@ router.post('/redeem', async (req, res) => {
 
         return res.json({
             status: true,
-            creator: 'elvigilante',
+            creator: 'edward',
             message: `¡Código canjeado! +${redeemCode.requests} solicitudes agregadas`,
             requests_added: redeemCode.requests,
             new_limit: user.limit
@@ -86,7 +86,7 @@ router.post('/admin/create-code', async (req, res) => {
 
         res.json({
             status: true,
-            creator: 'elvigilante',
+            creator: 'edward',
             message: 'Código creado exitosamente',
             data: {
                 code: newCode.code,
