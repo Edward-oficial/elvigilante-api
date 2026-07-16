@@ -192,6 +192,11 @@
         .card-header .icon.instagram { background: rgba(225, 48, 108, 0.1); color: #e1306c; }
         .card-header .icon.facebook { background: rgba(24, 119, 242, 0.1); color: #1877f2; }
         .card-header .icon.android { background: rgba(52, 211, 153, 0.1); color: #34d399; }
+        .card-header .icon.twitter { background: rgba(29, 161, 242, 0.1); color: #1da1f2; }
+        .card-header .icon.pinterest { background: rgba(230, 0, 35, 0.1); color: #e60023; }
+        .card-header .icon.mega { background: rgba(217, 39, 46, 0.1); color: #d9272e; }
+        .card-header .icon.mediafire { background: rgba(18, 153, 243, 0.1); color: #1299f3; }
+        .card-header .icon.reddit { background: rgba(255, 69, 0, 0.1); color: #ff4500; }
 
         body.light-mode .card-header .icon.tiktok { background: rgba(0, 0, 0, 0.05); }
 
@@ -553,6 +558,105 @@
             </button>
         </div>
 
+        <!-- Twitter / X -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon twitter"><i class="fab fa-twitter"></i></div>
+                <h3>Twitter / X</h3>
+                <span class="badge">Video</span>
+            </div>
+            <div class="card-body">
+                <div class="code-box" id="tw-path">GET /api/download/twitter?url=</div>
+                <input id="in-tw" class="input-test" placeholder="URL del tweet...">
+                <button class="btn-test" onclick="testApi('tw', '/api/download/twitter')">
+                    <i class="fas fa-download mr-2"></i> Descargar Twitter/X
+                </button>
+                <div id="res-tw" class="result-box"></div>
+            </div>
+            <button id="copy-tw" class="btn-copy-json" onclick="copyResult('tw')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
+        <!-- Pinterest -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon pinterest"><i class="fab fa-pinterest"></i></div>
+                <h3>Pinterest</h3>
+                <span class="badge">Imagen/Video</span>
+            </div>
+            <div class="card-body">
+                <div class="code-box" id="pin-path">GET /api/download/pinterest?url=</div>
+                <input id="in-pin" class="input-test" placeholder="URL del pin...">
+                <button class="btn-test" onclick="testApi('pin', '/api/download/pinterest')">
+                    <i class="fas fa-download mr-2"></i> Descargar Pinterest
+                </button>
+                <div id="res-pin" class="result-box"></div>
+            </div>
+            <button id="copy-pin" class="btn-copy-json" onclick="copyResult('pin')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
+        <!-- Mega -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon mega"><i class="fas fa-cloud-arrow-down"></i></div>
+                <h3>Mega.nz</h3>
+                <span class="badge">Archivo</span>
+            </div>
+            <div class="card-body">
+                <div class="code-box" id="mega-path">GET /api/download/mega?url=</div>
+                <p style="font-size:0.7rem; color:var(--text-secondary); margin-bottom:12px;">
+                    <i class="fas fa-info-circle mr-1"></i> Este endpoint transmite el archivo directamente (descarga binaria), no devuelve JSON.
+                </p>
+                <input id="in-mega" class="input-test" placeholder="https://mega.nz/file/...">
+                <button class="btn-test" onclick="openMega()">
+                    <i class="fas fa-download mr-2"></i> Abrir descarga de Mega
+                </button>
+            </div>
+        </div>
+
+        <!-- MediaFire -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon mediafire"><i class="fas fa-file-arrow-down"></i></div>
+                <h3>MediaFire</h3>
+                <span class="badge">Archivo</span>
+            </div>
+            <div class="card-body">
+                <div class="code-box" id="mf-path">GET /api/download/mediafire?url=</div>
+                <input id="in-mf" class="input-test" placeholder="URL de MediaFire...">
+                <button class="btn-test" onclick="testApi('mf', '/api/download/mediafire')">
+                    <i class="fas fa-download mr-2"></i> Obtener link directo
+                </button>
+                <div id="res-mf" class="result-box"></div>
+            </div>
+            <button id="copy-mf" class="btn-copy-json" onclick="copyResult('mf')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
+        <!-- Reddit -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon reddit"><i class="fab fa-reddit"></i></div>
+                <h3>Reddit</h3>
+                <span class="badge">Imagen/Video</span>
+            </div>
+            <div class="card-body">
+                <div class="code-box" id="reddit-path">GET /api/download/reddit?url=</div>
+                <input id="in-reddit" class="input-test" placeholder="URL del post de Reddit...">
+                <button class="btn-test" onclick="testApi('reddit', '/api/download/reddit')">
+                    <i class="fas fa-download mr-2"></i> Descargar de Reddit
+                </button>
+                <div id="res-reddit" class="result-box"></div>
+            </div>
+            <button id="copy-reddit" class="btn-copy-json" onclick="copyResult('reddit')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
     </main>
 
     <script>
@@ -570,7 +674,7 @@
                 }
 
                 // Actualizar paths con API key
-                const ids = ['ytaudio', 'tt', 'ig', 'fb'];
+                const ids = ['ytaudio', 'tt', 'ig', 'fb', 'tw', 'pin', 'mega', 'mf', 'reddit'];
                 ids.forEach(id => {
                     const el = document.getElementById(`${id}-path`);
                     if (el) el.innerText += `&apiKey=${userData.key}`;
@@ -601,6 +705,22 @@
                 icon.classList.replace('fa-sun', 'fa-moon');
                 localStorage.setItem('kazuma-theme', 'dark');
             }
+        }
+
+        function openMega() {
+            const val = document.getElementById('in-mega').value.trim();
+            if (!val) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Escribe una URL',
+                    text: 'Ingresa un link válido de Mega.nz',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-primary)',
+                    confirmButtonColor: '#3b82f6'
+                });
+                return;
+            }
+            window.open(`/api/download/mega?url=${encodeURIComponent(val)}&apiKey=${userData.key}`, '_blank');
         }
 
         async function testApi(id, route) {

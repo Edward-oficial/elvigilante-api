@@ -191,6 +191,9 @@
         .card-header .icon.kiss { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
         .card-header .icon.sad { background: rgba(59, 130, 246, 0.1); color: var(--accent); }
         .card-header .icon.solo { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .card-header .icon.hug { background: rgba(52, 211, 153, 0.1); color: #34d399; }
+        .card-header .icon.pat { background: rgba(168, 85, 247, 0.1); color: #a855f7; }
+        .card-header .icon.slap { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
 
         .card-header h3 {
             font-size: 0.85rem;
@@ -477,6 +480,78 @@
             </button>
         </div>
 
+        <!-- Hug -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon hug"><i class="fas fa-people-arrows"></i></div>
+                <h3>Anime Hug</h3>
+                <span class="badge">Random</span>
+            </div>
+            <div class="card-body">
+                <div class="tag-group">
+                    <span class="tag pink"><i class="fas fa-image mr-1"></i> GIF</span>
+                    <span class="tag pink"><i class="fas fa-random mr-1"></i> Aleatorio</span>
+                </div>
+                <p class="desc"><i class="fas fa-info-circle"></i> Devuelve un GIF aleatorio de abrazo anime (nekos.best).</p>
+                <div class="code-box" id="hug-path">GET /api/anime/hug?apiKey=</div>
+                <button class="btn-test hug-btn" onclick="testAnime('hug', '/api/anime/hug')">
+                    <i class="fas fa-dice mr-2"></i> Obtener Hug
+                </button>
+                <div id="res-hug" class="result-box"></div>
+            </div>
+            <button id="copy-hug" class="btn-copy-json" onclick="copyResult('hug')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
+        <!-- Pat -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon pat"><i class="fas fa-hand-sparkles"></i></div>
+                <h3>Anime Pat</h3>
+                <span class="badge">Random</span>
+            </div>
+            <div class="card-body">
+                <div class="tag-group">
+                    <span class="tag pink"><i class="fas fa-image mr-1"></i> GIF</span>
+                    <span class="tag pink"><i class="fas fa-random mr-1"></i> Aleatorio</span>
+                </div>
+                <p class="desc"><i class="fas fa-info-circle"></i> Devuelve un GIF aleatorio de cariñito en la cabeza (nekos.best).</p>
+                <div class="code-box" id="pat-path">GET /api/anime/pat?apiKey=</div>
+                <button class="btn-test pat-btn" onclick="testAnime('pat', '/api/anime/pat')">
+                    <i class="fas fa-dice mr-2"></i> Obtener Pat
+                </button>
+                <div id="res-pat" class="result-box"></div>
+            </div>
+            <button id="copy-pat" class="btn-copy-json" onclick="copyResult('pat')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
+        <!-- Slap -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon slap"><i class="fas fa-hand"></i></div>
+                <h3>Anime Slap</h3>
+                <span class="badge">Random</span>
+            </div>
+            <div class="card-body">
+                <div class="tag-group">
+                    <span class="tag pink"><i class="fas fa-image mr-1"></i> GIF</span>
+                    <span class="tag pink"><i class="fas fa-random mr-1"></i> Aleatorio</span>
+                </div>
+                <p class="desc"><i class="fas fa-info-circle"></i> Devuelve un GIF aleatorio de cachetada anime (nekos.best).</p>
+                <div class="code-box" id="slap-path">GET /api/anime/slap?apiKey=</div>
+                <button class="btn-test slap-btn" onclick="testAnime('slap', '/api/anime/slap')">
+                    <i class="fas fa-dice mr-2"></i> Obtener Slap
+                </button>
+                <div id="res-slap" class="result-box"></div>
+            </div>
+            <button id="copy-slap" class="btn-copy-json" onclick="copyResult('slap')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
     </main>
 
     <script>
@@ -494,7 +569,7 @@
                 }
 
                 // Actualizar paths con API key
-                ['kiss', 'sad', 'solo'].forEach(id => {
+                ['kiss', 'sad', 'solo', 'hug', 'pat', 'slap'].forEach(id => {
                     const el = document.getElementById(`${id}-path`);
                     if (el) el.innerText += userData.key;
                 });

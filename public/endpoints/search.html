@@ -193,6 +193,10 @@
         .card-header .icon.tiktok { background: rgba(0, 0, 0, 0.1); color: #00f2ea; }
         .card-header .icon.youtube { background: rgba(255, 0, 0, 0.1); color: #ff0000; }
         .card-header .icon.memes { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .card-header .icon.wikipedia { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+        .card-header .icon.anime { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+        .card-header .icon.lyrics { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
+        .card-header .icon.github { background: rgba(255, 255, 255, 0.08); color: #f1f5f9; }
 
         body.light-mode .card-header .icon.tiktok { background: rgba(0, 0, 0, 0.05); }
 
@@ -502,6 +506,87 @@
             </button>
         </div>
 
+        <!-- Wikipedia -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon wikipedia"><i class="fab fa-wikipedia-w"></i></div>
+                <h3>Wikipedia</h3>
+                <span class="badge">GET</span>
+            </div>
+            <div class="card-body">
+                <div class="code-box" id="wiki-path">GET /api/search/wikipedia?apiKey=</div>
+                <input id="in-wiki" class="input-test" placeholder="Buscar en Wikipedia...">
+                <button class="btn-test" onclick="testSearch('wiki', '/api/search/wikipedia')">
+                    <i class="fas fa-search mr-2"></i> Buscar en Wikipedia
+                </button>
+                <div id="res-wiki" class="result-box"></div>
+            </div>
+            <button id="copy-wiki" class="btn-copy-json" onclick="copyResult('wiki')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
+        <!-- Anime (MyAnimeList) -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon anime"><i class="fas fa-torii-gate"></i></div>
+                <h3>Anime (MyAnimeList)</h3>
+                <span class="badge">GET</span>
+            </div>
+            <div class="card-body">
+                <div class="code-box" id="anime-path">GET /api/search/anime?apiKey=</div>
+                <input id="in-anime" class="input-test" placeholder="Buscar un anime...">
+                <button class="btn-test" onclick="testSearch('anime', '/api/search/anime')">
+                    <i class="fas fa-search mr-2"></i> Buscar Anime
+                </button>
+                <div id="res-anime" class="result-box"></div>
+            </div>
+            <button id="copy-anime" class="btn-copy-json" onclick="copyResult('anime')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
+        <!-- Letras de canciones -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon lyrics"><i class="fas fa-music"></i></div>
+                <h3>Letras de Canciones</h3>
+                <span class="badge">GET</span>
+            </div>
+            <div class="card-body">
+                <div class="code-box" id="lyrics-path">GET /api/search/lyrics?apiKey=</div>
+                <input id="in-lyrics-artist" class="input-test" placeholder="Artista (ej: Coldplay)" style="margin-bottom:10px;">
+                <input id="in-lyrics-title" class="input-test" placeholder="Título (ej: Yellow)">
+                <button class="btn-test" onclick="testLyrics()">
+                    <i class="fas fa-search mr-2"></i> Buscar Letra
+                </button>
+                <div id="res-lyrics" class="result-box"></div>
+            </div>
+            <button id="copy-lyrics" class="btn-copy-json" onclick="copyResult('lyrics')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
+        <!-- GitHub -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon github"><i class="fab fa-github"></i></div>
+                <h3>Repositorios de GitHub</h3>
+                <span class="badge">GET</span>
+            </div>
+            <div class="card-body">
+                <div class="code-box" id="gh-path">GET /api/search/github?apiKey=</div>
+                <input id="in-gh" class="input-test" placeholder="Buscar repositorios...">
+                <button class="btn-test" onclick="testSearch('gh', '/api/search/github')">
+                    <i class="fas fa-search mr-2"></i> Buscar en GitHub
+                </button>
+                <div id="res-gh" class="result-box"></div>
+            </div>
+            <button id="copy-gh" class="btn-copy-json" onclick="copyResult('gh')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
     </main>
 
     <script>
@@ -518,12 +603,14 @@
                 }
 
                 // Actualizar paths con API key
-                ['pin', 'tt', 'yt'].forEach(id => {
+                ['pin', 'tt', 'yt', 'wiki', 'anime', 'gh'].forEach(id => {
                     const el = document.getElementById(`${id}-path`);
                     if (el) el.innerText += `${userData.key}&query=...`;
                 });
                 const memesEl = document.getElementById('memes-path');
                 if (memesEl) memesEl.innerText += `${userData.key}&cantidad=1`;
+                const lyricsEl = document.getElementById('lyrics-path');
+                if (lyricsEl) lyricsEl.innerText += `${userData.key}&artist=...&title=...`;
 
                 // Ocultar safety block
                 setTimeout(() => {
@@ -576,6 +663,38 @@
             }
         }
 
+        async function testLyrics() {
+            const artist = document.getElementById('in-lyrics-artist').value.trim();
+            const title = document.getElementById('in-lyrics-title').value.trim();
+            const resBox = document.getElementById('res-lyrics');
+            const copyBtn = document.getElementById('copy-lyrics');
+
+            if (!artist || !title) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Faltan datos',
+                    text: 'Escribe el artista y el título de la canción',
+                    background: 'var(--bg-card)',
+                    color: 'var(--text-primary)',
+                    confirmButtonColor: '#3b82f6'
+                });
+                return;
+            }
+
+            resBox.style.display = 'block';
+            resBox.innerText = "⏳ Buscando letra...";
+            copyBtn.style.display = 'none';
+
+            try {
+                const response = await fetch(`/api/search/lyrics?artist=${encodeURIComponent(artist)}&title=${encodeURIComponent(title)}&apiKey=${userData.key}`);
+                const data = await response.json();
+                resBox.innerText = JSON.stringify(data, null, 2);
+                copyBtn.style.display = 'block';
+            } catch (e) {
+                resBox.innerText = "❌ Error en el servidor";
+            }
+        }
+
         async function testSearch(id, route) {
             const query = document.getElementById(`in-${id}`).value.trim();
             const resBox = document.getElementById(`res-${id}`);
@@ -609,7 +728,7 @@
 
         function copyResult(id) {
             const text = document.getElementById(`res-${id}`).innerText;
-            if (!text || text === "⏳ Buscando..." || text === "⏳ Obteniendo memes..." || text === "❌ Error en el servidor") {
+            if (!text || text.includes('⏳') || text === "❌ Error en el servidor") {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Sin datos',

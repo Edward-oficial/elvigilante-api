@@ -155,6 +155,9 @@
         .card-header .icon.qr { background: rgba(139, 92, 246, 0.1); color: var(--accent-purple); }
         .card-header .icon.catbox { background: rgba(236, 72, 153, 0.1); color: #ec4899; }
         .card-header .icon.gacha { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+        .card-header .icon.base64 { background: rgba(34, 211, 238, 0.1); color: #22d3ee; }
+        .card-header .icon.shorturl { background: rgba(52, 211, 153, 0.1); color: #34d399; }
+        .card-header .icon.translate { background: rgba(99, 102, 241, 0.1); color: #6366f1; }
 
         .card-header h3 { font-size: 0.85rem; font-weight: 700; margin: 0; }
 
@@ -513,6 +516,75 @@
             </button>
         </div>
 
+        <!-- Base64 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon base64"><i class="fas fa-code"></i></div>
+                <h3>Base64</h3>
+                <span class="badge">Encode/Decode</span>
+            </div>
+            <div class="card-body">
+                <p class="desc"><i class="fas fa-info-circle"></i> Codifica o decodifica texto en Base64.</p>
+                <div class="code-box" id="base64-path">GET /api/tools/base64?apiKey=</div>
+                <input id="text-base64" class="input-test" placeholder="Texto a procesar..." style="margin-bottom:10px;">
+                <div class="btn-group-grid">
+                    <button class="btn-test" onclick="testBase64('encode')">
+                        <i class="fas fa-lock mr-1"></i> Codificar
+                    </button>
+                    <button class="btn-test secondary" onclick="testBase64('decode')">
+                        <i class="fas fa-unlock mr-1"></i> Decodificar
+                    </button>
+                </div>
+                <div id="result-base64" class="result-box"></div>
+            </div>
+            <button id="copy-base64" class="btn-copy-json" onclick="copyResult('base64')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
+        <!-- Acortador de URLs -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon shorturl"><i class="fas fa-link"></i></div>
+                <h3>Acortador de URLs</h3>
+                <span class="badge">TinyURL</span>
+            </div>
+            <div class="card-body">
+                <p class="desc"><i class="fas fa-info-circle"></i> Acorta una URL larga con TinyURL.</p>
+                <div class="code-box" id="shorturl-path">GET /api/tools/shorturl?apiKey=</div>
+                <input id="text-shorturl" class="input-test" placeholder="https://ejemplo.com/url-muy-larga" style="margin-bottom:10px;">
+                <button class="btn-test" onclick="testShorturl()">
+                    <i class="fas fa-link mr-2"></i> Acortar URL
+                </button>
+                <div id="result-shorturl" class="result-box"></div>
+            </div>
+            <button id="copy-shorturl" class="btn-copy-json" onclick="copyResult('shorturl')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
+        <!-- Traductor -->
+        <div class="card">
+            <div class="card-header">
+                <div class="icon translate"><i class="fas fa-language"></i></div>
+                <h3>Traductor</h3>
+                <span class="badge">GET</span>
+            </div>
+            <div class="card-body">
+                <p class="desc"><i class="fas fa-info-circle"></i> Traduce texto entre idiomas (detección automática de origen).</p>
+                <div class="code-box" id="translate-path">GET /api/tools/translate?apiKey=</div>
+                <input id="text-translate" class="input-test" placeholder="Texto a traducir..." style="margin-bottom:10px;">
+                <input id="to-translate" class="input-test" placeholder="Idioma destino (ej: es, en, fr)" style="margin-bottom:10px;">
+                <button class="btn-test" onclick="testTranslate()">
+                    <i class="fas fa-language mr-2"></i> Traducir
+                </button>
+                <div id="result-translate" class="result-box"></div>
+            </div>
+            <button id="copy-translate" class="btn-copy-json" onclick="copyResult('translate')">
+                <i class="fas fa-copy mr-2"></i> Copiar JSON
+            </button>
+        </div>
+
     </main>
 
     <script>
@@ -532,6 +604,9 @@
                 document.getElementById('qr-path').innerText += `${userData.key}&text=...`;
                 document.getElementById('catbox-path').innerText += userData.key;
                 document.getElementById('gacha-path').innerText = `GET /api/tools/gacha/pull?apiKey=${userData.key}`;
+                document.getElementById('base64-path').innerText += `${userData.key}&text=...&action=encode`;
+                document.getElementById('shorturl-path').innerText += `${userData.key}&url=...`;
+                document.getElementById('translate-path').innerText += `${userData.key}&text=...&to=es`;
 
                 setTimeout(() => {
                     document.getElementById('safety-block').classList.add('hidden');
@@ -673,6 +748,58 @@
             } catch (error) {
                 resBox.innerText = "❌ Error al cargar";
                 copyBtn.style.display = 'block';
+            }
+        }
+
+        async function testBase64(action) {
+            const txt = document.getElementById('text-base64').value.trim();
+            const resBox = document.getElementById('result-base64');
+            if (!txt) return Swal.fire({ icon: 'warning', title: 'Texto requerido', background: 'var(--bg-card)', color: 'var(--text-primary)', confirmButtonColor: '#3b82f6' });
+
+            resBox.style.display = 'block';
+            resBox.innerText = "⏳ Procesando...";
+
+            try {
+                const response = await fetch(`/api/tools/base64?text=${encodeURIComponent(txt)}&action=${action}&apiKey=${userData.key}`);
+                const data = await response.json();
+                resBox.innerText = JSON.stringify(data, null, 2);
+            } catch (e) {
+                resBox.innerText = "❌ Error en el servidor";
+            }
+        }
+
+        async function testShorturl() {
+            const url = document.getElementById('text-shorturl').value.trim();
+            const resBox = document.getElementById('result-shorturl');
+            if (!url) return Swal.fire({ icon: 'warning', title: 'URL requerida', background: 'var(--bg-card)', color: 'var(--text-primary)', confirmButtonColor: '#3b82f6' });
+
+            resBox.style.display = 'block';
+            resBox.innerText = "⏳ Acortando...";
+
+            try {
+                const response = await fetch(`/api/tools/shorturl?url=${encodeURIComponent(url)}&apiKey=${userData.key}`);
+                const data = await response.json();
+                resBox.innerText = JSON.stringify(data, null, 2);
+            } catch (e) {
+                resBox.innerText = "❌ Error en el servidor";
+            }
+        }
+
+        async function testTranslate() {
+            const txt = document.getElementById('text-translate').value.trim();
+            const to = document.getElementById('to-translate').value.trim() || 'es';
+            const resBox = document.getElementById('result-translate');
+            if (!txt) return Swal.fire({ icon: 'warning', title: 'Texto requerido', background: 'var(--bg-card)', color: 'var(--text-primary)', confirmButtonColor: '#3b82f6' });
+
+            resBox.style.display = 'block';
+            resBox.innerText = "⏳ Traduciendo...";
+
+            try {
+                const response = await fetch(`/api/tools/translate?text=${encodeURIComponent(txt)}&to=${encodeURIComponent(to)}&apiKey=${userData.key}`);
+                const data = await response.json();
+                resBox.innerText = JSON.stringify(data, null, 2);
+            } catch (e) {
+                resBox.innerText = "❌ Error en el servidor";
             }
         }
 
