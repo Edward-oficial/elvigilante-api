@@ -9,7 +9,7 @@ const { globalLimiter, authLimiter } = require('./middlewares/rateLimiter');
 const mongoose = require('mongoose');
 
 const app = express();
-const PORT = process.env.PORT || 3032;
+const PORT = process.env.PORT || 24680;
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://DvWilkerOFC:dvwilker15@dvwilker15.xndilqb.mongodb.net/?appName=dvwilker15';
 const MONGODB_DB = process.env.MONGODB_DB || 'wilker_api';
