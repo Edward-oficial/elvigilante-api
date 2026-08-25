@@ -2,6 +2,19 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 
+// CORS: sin esto, las requests desde un WebView cargado con file:// (origen null)
+// o desde cualquier dominio distinto al del server son bloqueadas por el navegador
+// con "Failed to fetch", aunque el server sí reciba y procese el request.
+router.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(204);
+    }
+    next();
+});
+
 async function ytsearch(query) {
     try {
         const response = await axios({
@@ -14,11 +27,8 @@ async function ytsearch(query) {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
                 "Accept-Language": "en-US,en;q=0.9",
                 "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-                // Pedimos la respuesta comprimida: la página de resultados de YouTube
-                // es pesada (varios MB sin comprimir), esto reduce mucho el tiempo de red.
                 "Accept-Encoding": "gzip, deflate, br",
             },
-            // 30s era demasiado margen para una sola petición HTML.
             timeout: 8000,
         });
 
@@ -67,8 +77,6 @@ async function ytsearch(query) {
                         });
                     }
 
-                    // Cortamos ambos loops apenas llegamos a 10, en vez de seguir
-                    // iterando el resto del contenido innecesariamente.
                     if (videos.length >= 10) break outer;
                 }
             }
