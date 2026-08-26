@@ -77,7 +77,7 @@ async function ytsearch(query) {
                         });
                     }
 
-                    if (videos.length >= 10) break outer;
+                    if (videos.length >= 30) break outer;
                 }
             }
         }
